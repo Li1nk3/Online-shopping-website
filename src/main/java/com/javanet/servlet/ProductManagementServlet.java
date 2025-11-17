@@ -58,6 +58,9 @@ public class ProductManagementServlet extends HttpServlet {
                     List<ProductImage> images = productImageDAO.getImagesByProductId(productId);
                     product.setImages(images);
                     request.setAttribute("product", product);
+                    // 获取所有分类
+                    List<String> categories = productDAO.getAllCategories();
+                    request.setAttribute("categories", categories);
                     request.getRequestDispatcher("/WEB-INF/views/product-form.jsp").forward(request, response);
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "商品不存在");
@@ -70,6 +73,15 @@ public class ProductManagementServlet extends HttpServlet {
                     return;
                 }
                 int productId = Integer.parseInt(idParam);
+                
+                // 验证商品所有权
+                Product product = productDAO.getProductById(productId);
+                if (product != null && !"admin".equals(user.getRole()) &&
+                    product.getSellerId() != user.getId()) {
+                    response.sendRedirect("product-management?error=您没有权限删除此商品");
+                    return;
+                }
+                
                 boolean success = productDAO.deleteProduct(productId);
                 if (success) {
                     response.sendRedirect("product-management?message=删除成功");
@@ -78,10 +90,20 @@ public class ProductManagementServlet extends HttpServlet {
                 }
             } else if ("add".equals(action)) {
                 // 添加新商品表单
+                // 获取所有分类
+                List<String> categories = productDAO.getAllCategories();
+                request.setAttribute("categories", categories);
                 request.getRequestDispatcher("/WEB-INF/views/product-form.jsp").forward(request, response);
             } else {
-                // 显示商品列表
-                List<Product> products = productDAO.getAllProducts();
+                // 显示商品列表 - 只显示该卖家的商品
+                List<Product> products;
+                if ("admin".equals(user.getRole())) {
+                    // 管理员可以看到所有商品
+                    products = productDAO.getAllProducts();
+                } else {
+                    // 卖家只能看到自己的商品
+                    products = productDAO.getProductsBySeller(user.getId());
+                }
                 request.setAttribute("products", products);
                 
                 // 传递消息
@@ -242,6 +264,7 @@ public class ProductManagementServlet extends HttpServlet {
             product.setPrice(price);
             product.setStock(stock);
             product.setCategory(category.trim());
+            product.setSellerId(user.getId());
             // 设置主图URL用于向后兼容
             product.setImageUrl(validImageUrls.get(primaryImageIndex));
             
@@ -252,6 +275,21 @@ public class ProductManagementServlet extends HttpServlet {
                 // 更新商品
                 int productId = Integer.parseInt(productIdStr);
                 product.setId(productId);
+                
+                // 验证商品所有权
+                Product existingProduct = productDAO.getProductById(productId);
+                if (existingProduct != null && !"admin".equals(user.getRole()) &&
+                    existingProduct.getSellerId() != user.getId()) {
+                    request.setAttribute("error", "您没有权限修改此商品");
+                    request.setAttribute("name", name);
+                    request.setAttribute("description", description);
+                    request.setAttribute("price", priceStr);
+                    request.setAttribute("stock", stockStr);
+                    request.setAttribute("category", category);
+                    request.getRequestDispatcher("/WEB-INF/views/product-form.jsp").forward(request, response);
+                    return;
+                }
+                
                 success = productDAO.updateProduct(product);
                 
                 if (success) {

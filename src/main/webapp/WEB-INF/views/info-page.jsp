@@ -13,26 +13,26 @@
     <nav class="modern-header">
         <div class="nav-container">
             <div class="nav-left">
-                <a href="home" class="logo">
+                <a href="${pageContext.request.contextPath}/home" class="logo">
                     <span class="logo-icon">🛒</span>
                     <span class="logo-text">JavaNet</span>
                 </a>
                 <div class="nav-links">
-                    <a href="products" class="nav-link">所有商品</a>
-                    <a href="products?category=电子产品" class="nav-link">电子产品</a>
-                    <a href="products?category=家居用品" class="nav-link">家居用品</a>
-                    <a href="products?category=服装鞋帽" class="nav-link">服装鞋帽</a>
+                    <a href="${pageContext.request.contextPath}/products" class="nav-link">所有商品</a>
+                    <a href="${pageContext.request.contextPath}/products?category=电子产品" class="nav-link">电子产品</a>
+                    <a href="${pageContext.request.contextPath}/products?category=家居用品" class="nav-link">家居用品</a>
+                    <a href="${pageContext.request.contextPath}/products?category=服装鞋帽" class="nav-link">服装鞋帽</a>
                 </div>
             </div>
             <div class="nav-right">
                 <div class="user-actions">
                     <c:choose>
                         <c:when test="${sessionScope.user != null}">
-                            <a href="cart" class="action-btn cart-btn">
+                            <a href="${pageContext.request.contextPath}/cart" class="action-btn cart-btn">
                                 <span class="btn-icon">🛒</span>
                                 <span>购物车</span>
                             </a>
-                            <a href="orders" class="action-btn">
+                            <a href="${pageContext.request.contextPath}/orders" class="action-btn">
                                 <span class="btn-icon">📋</span>
                                 <span>订单</span>
                             </a>
@@ -40,15 +40,15 @@
                                 <span class="user-name">欢迎, ${sessionScope.user.username}</span>
                                 <div class="dropdown">
                                     <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
-                                        <a href="product-management" class="dropdown-item">商品管理</a>
+                                        <a href="${pageContext.request.contextPath}/product-management" class="dropdown-item">商品管理</a>
                                     </c:if>
-                                    <a href="logout" class="dropdown-item">退出登录</a>
+                                    <a href="${pageContext.request.contextPath}/logout" class="dropdown-item">退出登录</a>
                                 </div>
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <a href="login" class="action-btn login-btn">登录</a>
-                            <a href="register" class="action-btn register-btn">注册</a>
+                            <a href="${pageContext.request.contextPath}/login" class="action-btn login-btn">登录</a>
+                            <a href="${pageContext.request.contextPath}/register" class="action-btn register-btn">注册</a>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -59,7 +59,7 @@
     <!-- 面包屑导航 -->
     <div class="container">
         <div class="breadcrumb">
-            <a href="home">首页</a> > <span>${title}</span>
+            <a href="${pageContext.request.contextPath}/home">首页</a> > <span>${title}</span>
         </div>
     </div>
 
@@ -233,7 +233,7 @@
                         <div class="content-section">
                             <h2>页面建设中</h2>
                             <p>该页面正在建设中，敬请期待！</p>
-                            <p><a href="home">返回首页</a></p>
+                            <p><a href="${pageContext.request.contextPath}/home">返回首页</a></p>
                         </div>
                     </c:otherwise>
                 </c:choose>
@@ -248,25 +248,25 @@
                 <div class="footer-section">
                     <h4>关于JavaNet</h4>
                     <ul>
-                        <li><a href="info/about">公司介绍</a></li>
-                        <li><a href="info/contact">联系我们</a></li>
-                        <li><a href="info/careers">招聘信息</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/about">公司介绍</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/contact">联系我们</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/careers">招聘信息</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>客户服务</h4>
                     <ul>
-                        <li><a href="info/help">帮助中心</a></li>
-                        <li><a href="info/returns">退换货政策</a></li>
-                        <li><a href="info/shipping">配送信息</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/help">帮助中心</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/returns">退换货政策</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/shipping">配送信息</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>购物指南</h4>
                     <ul>
-                        <li><a href="info/how-to-buy">如何购买</a></li>
-                        <li><a href="info/payment">支付方式</a></li>
-                        <li><a href="info/membership">会员权益</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/how-to-buy">如何购买</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/payment">支付方式</a></li>
+                        <li><a href="${pageContext.request.contextPath}/info/membership">会员权益</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">

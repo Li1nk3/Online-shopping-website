@@ -76,6 +76,36 @@
                     <p>${product.description}</p>
                 </div>
                 
+                <!-- 卖家信息 -->
+                <div class="seller-info">
+                    <h3>卖家信息</h3>
+                    <div class="seller-details">
+                        <div class="seller-info-item">
+                            <span class="info-icon">👨‍💼</span>
+                            <div class="info-content">
+                                <label>卖家名称</label>
+                                <span>${seller.username}</span>
+                            </div>
+                        </div>
+                        <div class="seller-info-item">
+                            <span class="info-icon">📧</span>
+                            <div class="info-content">
+                                <label>联系邮箱</label>
+                                <span>${seller.email}</span>
+                            </div>
+                        </div>
+                        <c:if test="${not empty seller.phone}">
+                            <div class="seller-info-item">
+                                <span class="info-icon">📱</span>
+                                <div class="info-content">
+                                    <label>联系电话</label>
+                                    <span>${seller.phone}</span>
+                                </div>
+                            </div>
+                        </c:if>
+                    </div>
+                </div>
+                
                 <div class="product-actions">
                     <c:choose>
                         <c:when test="${sessionScope.user != null}">
@@ -97,6 +127,103 @@
                     </c:choose>
                     <button onclick="history.back()" class="btn-back">返回商品列表</button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- 评论区域 -->
+        <div class="reviews-section">
+            <!-- 添加评论表单 -->
+            <c:if test="${sessionScope.user != null}">
+                <div class="add-review-card">
+                    <h3 class="review-card-title">
+                        <span class="title-icon">✍️</span>
+                        发表您的评价
+                    </h3>
+                    <form action="review" method="post" class="review-form-modern">
+                        <input type="hidden" name="productId" value="${product.id}">
+                        <div class="form-section">
+                            <label class="form-label">商品评分</label>
+                            <div class="star-rating-input">
+                                <input type="radio" name="rating" value="5" id="star5" required>
+                                <label for="star5" class="star-label" title="非常满意">★</label>
+                                <input type="radio" name="rating" value="4" id="star4">
+                                <label for="star4" class="star-label" title="满意">★</label>
+                                <input type="radio" name="rating" value="3" id="star3">
+                                <label for="star3" class="star-label" title="一般">★</label>
+                                <input type="radio" name="rating" value="2" id="star2">
+                                <label for="star2" class="star-label" title="不满意">★</label>
+                                <input type="radio" name="rating" value="1" id="star1">
+                                <label for="star1" class="star-label" title="非常不满意">★</label>
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="comment">评价内容</label>
+                            <textarea name="comment" id="comment" rows="5"
+                                placeholder="请分享您的使用体验，帮助其他买家做出更好的选择..."
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit-review-modern">
+                            <span class="btn-icon">📤</span>
+                            提交评价
+                        </button>
+                    </form>
+                </div>
+            </c:if>
+            
+            <!-- 评论列表 -->
+            <div class="reviews-list-modern">
+                <div class="reviews-header">
+                    <h3 class="reviews-list-title">
+                        <span class="title-icon">💬</span>
+                        全部评价 <span class="count-badge">${reviewCount}</span>
+                    </h3>
+                    <c:if test="${reviewCount > 0}">
+                        <div class="rating-summary-inline">
+                            <span class="rating-score">${String.format("%.1f", avgRating)}</span>
+                            <div class="rating-stars">
+                                <c:forEach var="i" begin="1" end="5">
+                                    <span class="star ${i <= avgRating ? 'filled' : ''}">★</span>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </c:if>
+                </div>
+                <c:choose>
+                    <c:when test="${not empty reviews}">
+                        <c:forEach var="review" items="${reviews}">
+                            <div class="review-card">
+                                <div class="review-card-header">
+                                    <div class="reviewer-avatar">
+                                        ${review.username.substring(0, 1).toUpperCase()}
+                                    </div>
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-name-row">
+                                            <span class="reviewer-name">${review.username}</span>
+                                            <div class="review-rating-stars">
+                                                <c:forEach var="i" begin="1" end="5">
+                                                    <span class="star ${i <= review.rating ? 'filled' : ''}">★</span>
+                                                </c:forEach>
+                                            </div>
+                                        </div>
+                                        <span class="review-time">
+                                            <span class="time-icon">🕒</span>
+                                            ${review.createdAt}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="review-card-content">
+                                    <p>${review.comment}</p>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="no-reviews-placeholder">
+                            <span class="placeholder-icon">📭</span>
+                            <p>还没有评价，快来成为第一个评价的用户吧！</p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>

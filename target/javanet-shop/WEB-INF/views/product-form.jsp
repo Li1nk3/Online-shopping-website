@@ -47,17 +47,28 @@
                     
                     <div class="form-group">
                         <label for="category">商品分类 *</label>
-                        <select id="category" name="category" required>
-                            <option value="">请选择分类</option>
-                            <option value="电子产品" ${(not empty category ? category : product.category) == '电子产品' ? 'selected' : ''}>电子产品</option>
-                            <option value="服装鞋帽" ${(not empty category ? category : product.category) == '服装鞋帽' ? 'selected' : ''}>服装鞋帽</option>
-                            <option value="家居用品" ${(not empty category ? category : product.category) == '家居用品' ? 'selected' : ''}>家居用品</option>
-                            <option value="图书文具" ${(not empty category ? category : product.category) == '图书文具' ? 'selected' : ''}>图书文具</option>
-                            <option value="运动户外" ${(not empty category ? category : product.category) == '运动户外' ? 'selected' : ''}>运动户外</option>
-                            <option value="美妆护肤" ${(not empty category ? category : product.category) == '美妆护肤' ? 'selected' : ''}>美妆护肤</option>
-                            <option value="食品饮料" ${(not empty category ? category : product.category) == '食品饮料' ? 'selected' : ''}>食品饮料</option>
-                            <option value="其他" ${(not empty category ? category : product.category) == '其他' ? 'selected' : ''}>其他</option>
-                        </select>
+                        <input type="text" id="category" name="category" list="categoryList"
+                               value="${not empty category ? category : product.category}"
+                               required maxlength="50"
+                               placeholder="请选择或输入分类">
+                        <datalist id="categoryList">
+                            <c:forEach var="cat" items="${categories}">
+                                <option value="${cat}">
+                            </c:forEach>
+                            <!-- 默认分类选项，以防数据库为空 -->
+                            <c:if test="${empty categories}">
+                                <option value="电子产品">
+                                <option value="服装鞋帽">
+                                <option value="家居用品">
+                                <option value="图书文具">
+                                <option value="运动户外">
+                                <option value="美妆护肤">
+                                <option value="食品饮料">
+                                <option value="游戏产品">
+                                <option value="其他">
+                            </c:if>
+                        </datalist>
+                        <small>可以从列表中选择现有分类，也可以输入自定义分类</small>
                     </div>
                 </div>
                 
@@ -98,6 +109,8 @@
                                                        ${image.primary ? 'checked' : ''}>
                                                 主图
                                             </label>
+                                        </div>
+                                        <div class="image-remove-section">
                                             <button type="button" class="btn-remove-image" onclick="removeImageInput(this)">删除</button>
                                         </div>
                                         <div class="image-preview-small">
@@ -115,6 +128,8 @@
                                             <input type="radio" name="primaryImageIndex" value="0" checked>
                                             主图
                                         </label>
+                                    </div>
+                                    <div class="image-remove-section">
                                         <button type="button" class="btn-remove-image" onclick="removeImageInput(this)">删除</button>
                                     </div>
                                     <div class="image-preview-small">
@@ -156,6 +171,8 @@
                         <input type="radio" name="primaryImageIndex" value="${index}">
                         主图
                     </label>
+                </div>
+                <div class="image-remove-section">
                     <button type="button" class="btn-remove-image" onclick="removeImageInput(this)">删除</button>
                 </div>
                 <div class="image-preview-small"></div>
@@ -174,7 +191,7 @@
         function removeImageInput(button) {
             const container = document.getElementById('imagesContainer');
             if (container.children.length > 1) {
-                button.parentElement.remove();
+                button.parentElement.parentElement.remove();
                 updateRadioValues();
             } else {
                 alert('至少需要保留一张图片');

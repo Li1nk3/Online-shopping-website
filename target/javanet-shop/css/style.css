@@ -153,7 +153,7 @@ body {
 .modern-product-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.4s ease;
 }
 
@@ -596,7 +596,7 @@ button:disabled {
 .product-image {
     width: 100%;
     height: 220px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 10px;
     transition: transform 0.3s ease;
 }
@@ -653,7 +653,7 @@ button:disabled {
 .detail-image {
     width: 100%;
     height: 400px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 10px;
 }
 
@@ -1866,7 +1866,7 @@ button:disabled {
 .image-input-group {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto auto auto;
     gap: 10px;
     padding: 15px;
     border: 2px solid #f0f0f0;
@@ -1898,11 +1898,19 @@ button:disabled {
 
 .image-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     gap: 15px;
     grid-column: 1;
     grid-row: 2;
+}
+
+.image-remove-section {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    grid-column: 1;
+    grid-row: 3;
 }
 
 .primary-checkbox {
@@ -1930,6 +1938,7 @@ button:disabled {
     font-size: 14px;
     transition: background-color 0.3s ease;
     white-space: nowrap;
+    width: auto !important;
 }
 
 .btn-remove-image:hover {
@@ -1956,7 +1965,7 @@ button:disabled {
 
 .image-preview-small {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 4;
     margin-top: 10px;
     text-align: center;
 }
@@ -1966,7 +1975,7 @@ button:disabled {
     max-height: 100px;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    object-fit: cover;
+    object-fit: contain;
 }
 
 /* 响应式设计 - 多图片 */
@@ -1982,7 +1991,7 @@ button:disabled {
     }
     
     .btn-remove-image {
-        width: 100%;
+        width: auto !important;
     }
 }
 
@@ -2350,6 +2359,47 @@ button:disabled {
     border-radius: 6px;
 }
 
+/* 轮播图中的分类样式 */
+.categories-in-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    max-width: 500px;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 12px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.category-item:hover {
+    background: white;
+    border-color: #0F7B0F;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    text-decoration: none;
+    color: #333;
+}
+
+.category-icon-small {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.category-item span {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
 /* 分类区域 */
 .category-section {
     padding: 60px 0;
@@ -2486,7 +2536,7 @@ button:disabled {
 .product-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.4s ease;
 }
 
@@ -2516,11 +2566,15 @@ button:disabled {
     background: white;
     color: #0F7B0F;
     border: none;
-    padding: 12px 24px;
+    padding: 15px 30px;
     border-radius: 25px;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    width: auto !important;
+    min-width: 140px;
 }
 
 .quick-add-btn:hover {
@@ -2717,5 +2771,510 @@ button:disabled {
     
     .modern-product-card {
         min-width: 250px;
+    }
+}
+
+/* 卖家信息样式（在product-detail框内） */
+.seller-info {
+    margin: 30px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.seller-info h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.seller-info h3::before {
+    content: "👤";
+    font-size: 20px;
+}
+
+.seller-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.seller-info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.seller-info-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.info-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.info-content label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-content span {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 美化的卖家信息卡片（独立卡片，已移除） */
+.seller-card {
+    display: none;
+}
+
+/* 评价统计卡片 */
+.rating-statistics {
+    margin: 30px 0;
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title::before {
+    content: "⭐";
+    font-size: 28px;
+}
+
+.rating-overview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-score-large {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #ff6b6b, #ffa500);
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+.score-number {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.rating-stars-large {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.rating-stars-large .star {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.rating-stars-large .star.filled {
+    color: white;
+}
+
+.total-reviews {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.no-rating-yet {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.no-rating-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* 现代化评论区域 */
+.reviews-section {
+    margin-top: 40px;
+}
+
+.add-review-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.review-card-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title-icon {
+    font-size: 24px;
+}
+
+.review-form-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+.star-rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 8px;
+    justify-content: center;
+}
+
+.star-rating-input input[type="radio"] {
+    display: none;
+}
+
+.star-rating-input .star-label {
+    font-size: 32px;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.star-rating-input input[type="radio"]:checked ~ .star-label,
+.star-rating-input input[type="radio"]:hover ~ .star-label {
+    color: #ffd700;
+    transform: scale(1.1);
+}
+
+.form-section textarea {
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    resize: vertical;
+    min-height: 120px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+.form-section textarea:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.btn-submit-review-modern {
+    background: linear-gradient(45deg, #ff6b6b, #ffa500);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-submit-review-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+}
+
+.btn-icon {
+    font-size: 18px;
+}
+
+/* 评论列表 */
+.reviews-list-modern {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.reviews-list-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.count-badge {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.rating-summary-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(45deg, #ff6b6b, #ffa500);
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.rating-summary-inline .rating-score {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.rating-summary-inline .rating-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.rating-summary-inline .rating-stars .star {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.rating-summary-inline .rating-stars .star.filled {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .reviews-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .rating-summary-inline {
+        align-self: stretch;
+        justify-content: center;
+    }
+}
+
+.review-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.review-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.reviewer-avatar {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.reviewer-info {
+    flex: 1;
+}
+
+.reviewer-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.reviewer-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+.review-rating-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.review-rating-stars .star {
+    font-size: 16px;
+    color: #ddd;
+}
+
+.review-rating-stars .star.filled {
+    color: #ffd700;
+}
+
+.review-time {
+    color: #666;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.time-icon {
+    font-size: 12px;
+}
+
+.review-card-content {
+    padding-left: 60px;
+}
+
+.review-card-content p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 15px;
+}
+
+.no-reviews-placeholder {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.placeholder-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .seller-card-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .seller-card-body {
+        padding: 20px;
+    }
+    
+    .seller-info-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .rating-score-large {
+        padding: 15px;
+    }
+    
+    .score-number {
+        font-size: 36px;
+    }
+    
+    .add-review-card {
+        padding: 20px;
+    }
+    
+    .star-rating-input {
+        gap: 5px;
+    }
+    
+    .star-rating-input .star-label {
+        font-size: 28px;
+    }
+    
+    .review-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .reviewer-name-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .review-card-content {
+        padding-left: 0;
+        margin-top: 10px;
     }
 }

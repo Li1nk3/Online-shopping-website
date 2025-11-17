@@ -62,10 +62,27 @@
 
     <div class="container">
         <div class="breadcrumb">
-            <a href="home">首页</a> > 商品列表
+            <a href="home">首页</a> >
+            <c:choose>
+                <c:when test="${not empty currentCategory}">
+                    <a href="products">商品列表</a> > ${currentCategory}
+                </c:when>
+                <c:otherwise>
+                    商品列表
+                </c:otherwise>
+            </c:choose>
         </div>
         
-        <h2 class="section-title">商品列表</h2>
+        <h2 class="section-title">
+            <c:choose>
+                <c:when test="${not empty currentCategory}">
+                    ${currentCategory}
+                </c:when>
+                <c:otherwise>
+                    商品列表
+                </c:otherwise>
+            </c:choose>
+        </h2>
         
         <div class="products-grid">
             <c:forEach var="product" items="${products}">
@@ -127,7 +144,16 @@
         <c:if test="${empty products}">
             <div class="empty-products">
                 <h3>暂无商品</h3>
-                <p>还没有任何商品，请等待商品上架</p>
+                <p>
+                    <c:choose>
+                        <c:when test="${not empty currentCategory}">
+                            该分类下暂无商品
+                        </c:when>
+                        <c:otherwise>
+                            还没有任何商品，请等待商品上架
+                        </c:otherwise>
+                    </c:choose>
+                </p>
                 <a href="home" class="btn-add-product">返回首页</a>
             </div>
         </c:if>

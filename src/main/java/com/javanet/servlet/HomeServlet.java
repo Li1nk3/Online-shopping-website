@@ -32,37 +32,23 @@ public class HomeServlet extends HttpServlet {
                 product.setImages(images);
             }
             
-            // 获取推荐商品（前8个）
+            // 获取推荐商品（前3个）
             List<Product> featuredProducts = allProducts.stream()
-                    .limit(8)
+                    .limit(3)
                     .collect(Collectors.toList());
             
-            // 获取新品（最新4个）
+            // 获取新品（按ID倒序，最新6个）
             List<Product> newProducts = allProducts.stream()
-                    .limit(4)
+                    .sorted((p1, p2) -> Integer.compare(p2.getId(), p1.getId()))
+                    .limit(6)
                     .collect(Collectors.toList());
             
-            // 按分类分组商品
-            List<Product> electronicsProducts = allProducts.stream()
-                    .filter(p -> "电子产品".equals(p.getCategory()))
-                    .limit(6)
-                    .collect(Collectors.toList());
-                    
-            List<Product> homeProducts = allProducts.stream()
-                    .filter(p -> "家居用品".equals(p.getCategory()))
-                    .limit(6)
-                    .collect(Collectors.toList());
-                    
-            List<Product> clothingProducts = allProducts.stream()
-                    .filter(p -> "服装鞋帽".equals(p.getCategory()))
-                    .limit(6)
-                    .collect(Collectors.toList());
+            // 获取所有分类
+            List<String> categories = productDAO.getAllCategories();
 
             request.setAttribute("featuredProducts", featuredProducts);
             request.setAttribute("newProducts", newProducts);
-            request.setAttribute("electronicsProducts", electronicsProducts);
-            request.setAttribute("homeProducts", homeProducts);
-            request.setAttribute("clothingProducts", clothingProducts);
+            request.setAttribute("categories", categories);
 
             request.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
         } catch (Exception e) {

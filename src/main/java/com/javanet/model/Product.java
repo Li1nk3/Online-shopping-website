@@ -11,6 +11,7 @@ public class Product {
     private int stock;
     private String category;
     private String imageUrl;
+    private int sellerId;
     private List<ProductImage> images;
     
     public Product() {}
@@ -45,6 +46,9 @@ public class Product {
     
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    
+    public int getSellerId() { return sellerId; }
+    public void setSellerId(int sellerId) { this.sellerId = sellerId; }
     
     public List<ProductImage> getImages() { return images; }
     public void setImages(List<ProductImage> images) { this.images = images; }
