@@ -2227,7 +2227,7 @@ button:disabled {
 .dropdown {
     display: none;
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 5px);
     right: 0;
     background: white;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
@@ -2236,6 +2236,17 @@ button:disabled {
     min-width: 160px;
     z-index: 1000;
     animation: fadeIn 0.2s ease;
+}
+
+/* 添加一个透明的连接区域，防止鼠标移动时菜单消失 */
+.dropdown::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: transparent;
 }
 
 @keyframes fadeIn {
@@ -2253,6 +2264,13 @@ button:disabled {
     display: block;
 }
 
+/* 当鼠标悬停在用户菜单或下拉菜单上时显示 */
+.user-menu:hover .dropdown,
+.dropdown:hover {
+    display: block;
+}
+
+/* 确保下拉菜单在悬停时保持显示 */
 .user-menu:hover .dropdown {
     display: block;
 }

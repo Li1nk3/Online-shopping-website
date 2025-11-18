@@ -219,6 +219,35 @@
                 window.location.href = 'products?search=' + encodeURIComponent(query);
             }
         });
+
+        // 下拉菜单交互优化
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.querySelector('.dropdown');
+            
+            if (userMenu && dropdown) {
+                let hideTimeout;
+                
+                userMenu.addEventListener('mouseenter', function() {
+                    clearTimeout(hideTimeout);
+                    dropdown.style.display = 'block';
+                });
+                
+                userMenu.addEventListener('mouseleave', function() {
+                    hideTimeout = setTimeout(function() {
+                        dropdown.style.display = 'none';
+                    }, 200);
+                });
+                
+                dropdown.addEventListener('mouseenter', function() {
+                    clearTimeout(hideTimeout);
+                });
+                
+                dropdown.addEventListener('mouseleave', function() {
+                    dropdown.style.display = 'none';
+                });
+            }
+        });
     </script>
 </body>
 </html>
