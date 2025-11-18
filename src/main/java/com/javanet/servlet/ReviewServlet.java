@@ -1,6 +1,7 @@
 package com.javanet.servlet;
 
 import com.javanet.dao.ProductReviewDAO;
+import com.javanet.dao.OrderDAO;
 import com.javanet.model.ProductReview;
 import com.javanet.model.User;
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import java.net.URLEncoder;
 @WebServlet("/review")
 public class ReviewServlet extends HttpServlet {
     private ProductReviewDAO reviewDAO = new ProductReviewDAO();
+    private OrderDAO orderDAO = new OrderDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -46,6 +48,12 @@ public class ReviewServlet extends HttpServlet {
             // 验证评分范围
             if (rating < 1 || rating > 5) {
                 response.sendRedirect("products?id=" + productId + "&error=" + URLEncoder.encode("评分必须在1-5星之间", "UTF-8"));
+                return;
+            }
+            
+            // 检查用户是否购买过该商品
+            if (!orderDAO.hasUserPurchasedProduct(user.getId(), productId)) {
+                response.sendRedirect("products?id=" + productId + "&error=" + URLEncoder.encode("只有购买过该商品的用户才能评论", "UTF-8"));
                 return;
             }
             

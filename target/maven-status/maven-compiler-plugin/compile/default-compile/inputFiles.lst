@@ -1,11 +1,14 @@
 /root/javanet/src/main/java/com/javanet/model/ProductImage.java
 /root/javanet/src/main/java/com/javanet/util/DatabaseConnection.java
 /root/javanet/src/main/java/com/javanet/servlet/CheckoutServlet.java
+/root/javanet/src/main/java/com/javanet/servlet/SellerOrdersServlet.java
 /root/javanet/src/main/java/com/javanet/servlet/HomeServlet.java
 /root/javanet/src/main/java/com/javanet/servlet/RegisterServlet.java
 /root/javanet/src/main/java/com/javanet/model/Order.java
 /root/javanet/src/main/java/com/javanet/dao/UserDAO.java
 /root/javanet/src/main/java/com/javanet/dao/ProductDAO.java
+/root/javanet/src/main/java/com/javanet/servlet/OrderDetailServlet.java
+/root/javanet/src/main/java/com/javanet/model/OrderItem.java
 /root/javanet/src/main/java/com/javanet/service/UserService.java
 /root/javanet/src/main/java/com/javanet/model/ProductReview.java
 /root/javanet/src/main/java/com/javanet/servlet/LogoutServlet.java

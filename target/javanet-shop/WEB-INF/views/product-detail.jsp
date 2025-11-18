@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>${product.name} - JavaNet 在线商城</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
@@ -133,42 +134,67 @@
         <!-- 评论区域 -->
         <div class="reviews-section">
             <!-- 添加评论表单 -->
-            <c:if test="${sessionScope.user != null}">
-                <div class="add-review-card">
-                    <h3 class="review-card-title">
-                        <span class="title-icon">✍️</span>
-                        发表您的评价
-                    </h3>
-                    <form action="review" method="post" class="review-form-modern">
-                        <input type="hidden" name="productId" value="${product.id}">
-                        <div class="form-section">
-                            <label class="form-label">商品评分</label>
-                            <div class="star-rating-input">
-                                <input type="radio" name="rating" value="5" id="star5" required>
-                                <label for="star5" class="star-label" title="非常满意">★</label>
-                                <input type="radio" name="rating" value="4" id="star4">
-                                <label for="star4" class="star-label" title="满意">★</label>
-                                <input type="radio" name="rating" value="3" id="star3">
-                                <label for="star3" class="star-label" title="一般">★</label>
-                                <input type="radio" name="rating" value="2" id="star2">
-                                <label for="star2" class="star-label" title="不满意">★</label>
-                                <input type="radio" name="rating" value="1" id="star1">
-                                <label for="star1" class="star-label" title="非常不满意">★</label>
+            <c:choose>
+                <c:when test="${sessionScope.user != null && hasPurchased}">
+                    <div class="add-review-card">
+                        <h3 class="review-card-title">
+                            <span class="title-icon">✍️</span>
+                            发表您的评价
+                        </h3>
+                        <form action="review" method="post" class="review-form-modern">
+                            <input type="hidden" name="productId" value="${product.id}">
+                            <div class="form-section">
+                                <label class="form-label">商品评分</label>
+                                <div class="star-rating-input">
+                                    <input type="radio" name="rating" value="5" id="star5" required>
+                                    <label for="star5" class="star-label" title="非常满意">★</label>
+                                    <input type="radio" name="rating" value="4" id="star4">
+                                    <label for="star4" class="star-label" title="满意">★</label>
+                                    <input type="radio" name="rating" value="3" id="star3">
+                                    <label for="star3" class="star-label" title="一般">★</label>
+                                    <input type="radio" name="rating" value="2" id="star2">
+                                    <label for="star2" class="star-label" title="不满意">★</label>
+                                    <input type="radio" name="rating" value="1" id="star1">
+                                    <label for="star1" class="star-label" title="非常不满意">★</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-section">
-                            <label class="form-label" for="comment">评价内容</label>
-                            <textarea name="comment" id="comment" rows="5"
-                                placeholder="请分享您的使用体验，帮助其他买家做出更好的选择..."
-                                required></textarea>
-                        </div>
-                        <button type="submit" class="btn-submit-review-modern">
-                            <span class="btn-icon">📤</span>
-                            提交评价
-                        </button>
-                    </form>
-                </div>
-            </c:if>
+                            <div class="form-section">
+                                <label class="form-label" for="comment">评价内容</label>
+                                <textarea name="comment" id="comment" rows="5"
+                                    placeholder="请分享您的使用体验，帮助其他买家做出更好的选择..."
+                                    required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit-review-modern">
+                                <span class="btn-icon">📤</span>
+                                提交评价
+                            </button>
+                        </form>
+                    </div>
+                </c:when>
+                <c:when test="${sessionScope.user != null && !hasPurchased}">
+                    <div class="add-review-card" style="background: #fff3cd; border-color: #ffc107;">
+                        <h3 class="review-card-title" style="color: #856404;">
+                            <span class="title-icon">ℹ️</span>
+                            评价提示
+                        </h3>
+                        <p style="color: #856404; margin: 15px 0; line-height: 1.6;">
+                            只有购买过该商品的用户才能发表评价。<br>
+                            购买商品后,您就可以分享您的使用体验了!
+                        </p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="add-review-card" style="background: #f8f9fa; border-color: #dee2e6;">
+                        <h3 class="review-card-title" style="color: #495057;">
+                            <span class="title-icon">🔒</span>
+                            评价提示
+                        </h3>
+                        <p style="color: #6c757d; margin: 15px 0; line-height: 1.6;">
+                            请先<a href="login" style="color: #007bff; text-decoration: underline;">登录</a>并购买该商品后才能发表评价。
+                        </p>
+                    </div>
+                </c:otherwise>
+            </c:choose>
             
             <!-- 评论列表 -->
             <div class="reviews-list-modern">

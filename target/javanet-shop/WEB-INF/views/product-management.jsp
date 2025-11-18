@@ -26,7 +26,10 @@
         
         <div class="management-header">
             <h2>商品管理</h2>
-            <a href="product-management?action=add" class="btn-add-product">添加新商品</a>
+            <div style="display: flex; gap: 10px;">
+                <a href="seller-orders" class="btn-add-product" style="background: linear-gradient(45deg, #007bff, #0056b3);">📦 订单管理</a>
+                <a href="product-management?action=add" class="btn-add-product">添加新商品</a>
+            </div>
         </div>
         
         <c:if test="${not empty message}">

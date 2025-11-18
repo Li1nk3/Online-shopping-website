@@ -7,6 +7,7 @@ com/javanet/dao/ProductReviewDAO.class
 com/javanet/servlet/ProductServlet.class
 com/javanet/servlet/OrdersServlet.class
 com/javanet/filter/CharacterEncodingFilter.class
+com/javanet/model/OrderItem.class
 com/javanet/servlet/HomeServlet.class
 com/javanet/dao/ProductImageDAO.class
 com/javanet/servlet/ProductManagementServlet.class
@@ -17,6 +18,7 @@ com/javanet/model/Order.class
 com/javanet/servlet/LoginServlet.class
 com/javanet/model/ProductReview.class
 com/javanet/service/UserService.class
+com/javanet/servlet/OrderDetailServlet.class
 com/javanet/dao/ProductDAO.class
 com/javanet/servlet/InfoPageServlet.class
 com/javanet/dao/UserDAO.class
@@ -24,4 +26,5 @@ com/javanet/servlet/OrderConfirmationServlet.class
 com/javanet/servlet/CartServlet.class
 com/javanet/servlet/RegisterServlet.class
 com/javanet/servlet/ReviewServlet.class
+com/javanet/servlet/SellerOrdersServlet.class
 com/javanet/dao/CartDAO.class

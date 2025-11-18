@@ -8,11 +8,13 @@ import com.javanet.dao.ProductDAO;
 import com.javanet.dao.ProductImageDAO;
 import com.javanet.dao.ProductReviewDAO;
 import com.javanet.dao.UserDAO;
+import com.javanet.dao.OrderDAO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class ProductServlet extends HttpServlet {
     private ProductImageDAO productImageDAO;
     private ProductReviewDAO reviewDAO;
     private UserDAO userDAO;
+    private OrderDAO orderDAO;
     
     @Override
     public void init() throws ServletException {
@@ -29,6 +32,7 @@ public class ProductServlet extends HttpServlet {
         productImageDAO = new ProductImageDAO();
         reviewDAO = new ProductReviewDAO();
         userDAO = new UserDAO();
+        orderDAO = new OrderDAO();
     }
     
     @Override
@@ -55,10 +59,19 @@ public class ProductServlet extends HttpServlet {
                     double avgRating = reviewDAO.getAverageRating(product.getId());
                     int reviewCount = reviewDAO.getReviewCount(product.getId());
                     
+                    // 检查当前用户是否购买过该商品
+                    HttpSession session = request.getSession();
+                    User currentUser = (User) session.getAttribute("user");
+                    boolean hasPurchased = false;
+                    if (currentUser != null) {
+                        hasPurchased = orderDAO.hasUserPurchasedProduct(currentUser.getId(), product.getId());
+                    }
+                    
                     request.setAttribute("product", product);
                     request.setAttribute("reviews", reviews);
                     request.setAttribute("avgRating", avgRating);
                     request.setAttribute("reviewCount", reviewCount);
+                    request.setAttribute("hasPurchased", hasPurchased);
                     
                     request.getRequestDispatcher("/WEB-INF/views/product-detail.jsp").forward(request, response);
                 } else {
