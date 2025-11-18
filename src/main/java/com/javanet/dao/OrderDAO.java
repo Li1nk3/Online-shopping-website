@@ -247,4 +247,39 @@ public class OrderDAO {
         }
         return items;
     }
+    
+    /**
+     * 取消订单
+     * @param orderId 订单ID
+     * @param userId 用户ID (用于验证订单所有权)
+     * @return 如果取消成功返回true,否则返回false
+     */
+    public boolean cancelOrder(int orderId, int userId) {
+        // 首先检查订单是否属于该用户且可以取消
+        String checkSql = "SELECT order_status, payment_status FROM orders WHERE id = ? AND user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+            checkStmt.setInt(1, orderId);
+            checkStmt.setInt(2, userId);
+            ResultSet rs = checkStmt.executeQuery();
+            
+            if (rs.next()) {
+                String orderStatus = rs.getString("order_status");
+                String paymentStatus = rs.getString("payment_status");
+                
+                // 只有待处理且未支付的订单才能取消
+                if ("pending".equals(orderStatus) && "pending".equals(paymentStatus)) {
+                    String updateSql = "UPDATE orders SET order_status = 'cancelled' WHERE id = ? AND user_id = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                        updateStmt.setInt(1, orderId);
+                        updateStmt.setInt(2, userId);
+                        return updateStmt.executeUpdate() > 0;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -119,7 +119,7 @@
                                 <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'pending'}">
                                     <button class="btn-cancel-order" onclick="cancelOrder('${order.id}')">取消订单</button>
                                 </c:if>
-                                <c:if test="${order.paymentStatus == 'pending' && order.paymentMethod == 'online'}">
+                                <c:if test="${order.paymentStatus == 'pending' && order.paymentMethod == 'online' && order.orderStatus != 'cancelled'}">
                                     <button class="btn-pay-now" onclick="payOrder('${order.id}')">立即支付</button>
                                 </c:if>
                             </div>
@@ -133,8 +133,34 @@
     <script>
         function cancelOrder(orderId) {
             if (confirm('确定要取消这个订单吗？')) {
-                // 这里可以添加取消订单的AJAX请求
-                alert('取消订单功能待实现');
+                // 发送AJAX请求取消订单
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'orders', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200 && response.success) {
+                                alert('订单已成功取消！');
+                                // 刷新页面以显示更新后的订单状态
+                                window.location.reload();
+                            } else {
+                                alert('取消订单失败: ' + (response.message || '未知错误'));
+                            }
+                        } catch (e) {
+                            alert('取消订单失败: 服务器响应格式错误');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    alert('取消订单失败: 网络错误');
+                };
+                
+                // 发送请求
+                xhr.send('action=cancel&orderId=' + encodeURIComponent(orderId));
             }
         }
         
