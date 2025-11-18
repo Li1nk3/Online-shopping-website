@@ -30,7 +30,7 @@
                     <div class="nav-right">
                         <div class="search-box">
                             <input type="text" placeholder="搜索商品..." class="search-input">
-                            <button class="search-btn">🔍</button>
+                            <button class="search-btn">搜索</button>
                         </div>
                         <div class="user-actions">
                             <c:choose>
@@ -39,15 +39,19 @@
                                         <span class="btn-icon">🛒</span>
                                         <span>购物车</span>
                                     </a>
-                                    <a href="orders" class="action-btn">
+                                    <a href="orders" class="action-btn orders-btn">
                                         <span class="btn-icon">📋</span>
-                                        <span>订单</span>
+                                        <span>我的订单</span>
                                     </a>
+                                    <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
+                                        <a href="product-management" class="action-btn management-btn">
+                                            <span>商品管理</span>
+                                        </a>
+                                    </c:if>
                                     <div class="user-menu">
-                                        <span class="user-name">欢迎, ${sessionScope.user.username}</span>
-                                        <div class="dropdown">
-                                            <c:if
-                                                test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
+                                        <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
+                                        <div class="dropdown" id="userDropdown">
+                                            <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
                                                 <a href="product-management" class="dropdown-item">商品管理</a>
                                             </c:if>
                                             <a href="logout" class="dropdown-item">退出登录</a>
@@ -55,8 +59,14 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="login" class="action-btn login-btn">登录</a>
-                                    <a href="register" class="action-btn register-btn">注册</a>
+                                    <a href="login" class="action-btn login-btn">
+                                        <span class="btn-icon">🔑</span>
+                                        <span>登录</span>
+                                    </a>
+                                    <a href="register" class="action-btn register-btn">
+                                        <span class="btn-icon">📝</span>
+                                        <span>注册</span>
+                                    </a>
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -310,33 +320,33 @@
                         <c:when test="${sessionScope.user != null}">
                             fetch('cart', {
                                 method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                            body: 'action=add&productId=' + productId
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                            return response.json();
-                    })
-                    .then(data => {
-                        if(data.success) {
-                                showNotification('商品已加入购物车');
-                        } else {
-                                showNotification('添加失败: ' + (data.message || '未知错误'), 'error');
-                        }
-                    })
-                    .catch(error => {
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: 'action=add&productId=' + productId
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if(data.success) {
+                                    showNotification('商品已加入购物车');
+                                } else {
+                                    showNotification('添加失败: ' + (data.message || '未知错误'), 'error');
+                                }
+                            })
+                            .catch(error => {
                                 console.error('Error:', error);
-                            showNotification('网络错误，请重试', 'error');
-                    });
+                                showNotification('网络错误，请重试', 'error');
+                            });
                         </c:when>
                         <c:otherwise>
                             if(confirm('请先登录后再加入购物车，是否现在登录？')) {
                                 window.location.href = 'login';
-                    }
+                            }
                         </c:otherwise>
                     </c:choose>
                 }
@@ -377,32 +387,19 @@
                     }
                 });
 
-                // 用户菜单交互功能
-                document.addEventListener('DOMContentLoaded', function () {
+                // 用户下拉菜单功能
+                function toggleDropdown() {
+                    const dropdown = document.getElementById('userDropdown');
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                }
+
+                // 点击其他地方关闭下拉菜单
+                document.addEventListener('click', function(event) {
                     const userMenu = document.querySelector('.user-menu');
-                    const dropdown = document.querySelector('.dropdown');
-
-                    if (userMenu && dropdown) {
-                        let hoverTimeout;
-
-                        userMenu.addEventListener('mouseenter', function () {
-                            clearTimeout(hoverTimeout);
-                            dropdown.style.display = 'block';
-                        });
-
-                        userMenu.addEventListener('mouseleave', function () {
-                            hoverTimeout = setTimeout(function () {
-                                dropdown.style.display = 'none';
-                            }, 300); // 300ms延迟，给用户时间移动到菜单上
-                        });
-
-                        dropdown.addEventListener('mouseenter', function () {
-                            clearTimeout(hoverTimeout);
-                        });
-
-                        dropdown.addEventListener('mouseleave', function () {
-                            dropdown.style.display = 'none';
-                        });
+                    const dropdown = document.getElementById('userDropdown');
+                    
+                    if (userMenu && dropdown && !userMenu.contains(event.target)) {
+                        dropdown.style.display = 'none';
                     }
                 });
             </script>

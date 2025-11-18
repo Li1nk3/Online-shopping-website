@@ -2192,18 +2192,38 @@ button:disabled {
     color: white;
 }
 
+.orders-btn {
+    background: #007bff;
+    color: white;
+}
+
+.orders-btn:hover {
+    background: #0056b3;
+    color: white;
+}
+
 .login-btn {
-    border: 1px solid #ddd;
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: white;
+}
+
+.login-btn:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
 }
 
 .register-btn {
     background: #0F7B0F;
     color: white;
+    border: 2px solid #0F7B0F;
 }
 
 .register-btn:hover {
     background: #0a5a0a;
     color: white;
+    border-color: #0a5a0a;
 }
 
 .user-menu {
@@ -2264,15 +2284,17 @@ button:disabled {
     display: block;
 }
 
-/* 当鼠标悬停在用户菜单或下拉菜单上时显示 */
-.user-menu:hover .dropdown,
-.dropdown:hover {
-    display: block;
+/* 移除悬停触发，改为点击触发 */
+.user-name {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    user-select: none;
 }
 
-/* 确保下拉菜单在悬停时保持显示 */
-.user-menu:hover .dropdown {
-    display: block;
+.user-name:hover {
+    color: #0F7B0F;
 }
 
 .dropdown-item {
@@ -2281,14 +2303,35 @@ button:disabled {
     color: #333;
     text-decoration: none;
     border-radius: 6px;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
     white-space: nowrap;
+    font-weight: 500;
+    border: 1px solid transparent;
 }
 
 .dropdown-item:hover {
-    background: #f5f5f5;
+    background: linear-gradient(135deg, #0F7B0F, #0a5a0a);
+    color: white;
     text-decoration: none;
-    color: #333;
+    border-color: #0F7B0F;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(15, 123, 15, 0.3);
+}
+
+/* 特别为退出登录按钮添加更明显的样式 */
+.dropdown-item[href="logout"] {
+    color: #dc3545;
+    font-weight: 600;
+    border: 1px solid #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.dropdown-item[href="logout"]:hover {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border-color: #dc3545;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
 }
 
 /* 轮播图 */

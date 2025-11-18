@@ -42,7 +42,7 @@
                                 <span>订单</span>
                             </a>
                             <div class="user-menu">
-                                <span class="user-name">欢迎, ${sessionScope.user.username}</span>
+                                <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
                                 <div class="dropdown">
                                     <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
                                         <a href="product-management" class="dropdown-item">商品管理</a>
@@ -220,32 +220,21 @@
             }
         });
 
-        // 下拉菜单交互优化
-        document.addEventListener('DOMContentLoaded', function() {
+        // 用户下拉菜单功能
+        function toggleDropdown() {
+            const dropdown = document.querySelector('.dropdown');
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', function(event) {
             const userMenu = document.querySelector('.user-menu');
             const dropdown = document.querySelector('.dropdown');
             
-            if (userMenu && dropdown) {
-                let hideTimeout;
-                
-                userMenu.addEventListener('mouseenter', function() {
-                    clearTimeout(hideTimeout);
-                    dropdown.style.display = 'block';
-                });
-                
-                userMenu.addEventListener('mouseleave', function() {
-                    hideTimeout = setTimeout(function() {
-                        dropdown.style.display = 'none';
-                    }, 200);
-                });
-                
-                dropdown.addEventListener('mouseenter', function() {
-                    clearTimeout(hideTimeout);
-                });
-                
-                dropdown.addEventListener('mouseleave', function() {
-                    dropdown.style.display = 'none';
-                });
+            if (userMenu && dropdown && !userMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
             }
         });
     </script>
