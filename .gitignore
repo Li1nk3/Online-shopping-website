@@ -8,3 +8,26 @@
 .vscode/
 *.iml
 .DS_Store
+
+# 忽略日志文件
+*.log
+logs/
+
+# 忽略临时文件和缓存
+*.tmp
+*.temp
+*.cache
+.metadata/
+
+# 忽略数据库连接配置（如果包含敏感信息）
+# src/main/java/com/javanet/util/DatabaseConnection.java
+
+# 忽略备份文件
+*.bak
+*.backup
+*~
+
+# 忽略操作系统生成的文件
+Thumbs.db
+*.swp
+*.swo
