@@ -218,9 +218,8 @@
                         </div>
                         <div class="new-products-grid">
                             <c:forEach var="product" items="${newProducts}">
-                                <div class="new-product-card">
+                                <div class="modern-product-card">
                                     <a href="products?id=${product.id}" class="product-link">
-                                        <div class="product-badge">NEW</div>
                                         <div class="product-image-container">
                                             <c:choose>
                                                 <c:when test="${not empty product.images}">
@@ -236,6 +235,26 @@
                                                         class="product-image" onerror="this.style.display='none'">
                                                 </c:otherwise>
                                             </c:choose>
+                                            <div class="product-overlay">
+                                                <c:choose>
+                                                    <c:when test="${sessionScope.user != null}">
+                                                        <c:if test="${product.stock > 0}">
+                                                            <button class="quick-add-btn"
+                                                                onclick="event.stopPropagation(); addToCart(${product.id}); return false;">
+                                                                快速加入购物车
+                                                            </button>
+                                                        </c:if>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:if test="${product.stock > 0}">
+                                                            <button class="quick-add-btn"
+                                                                onclick="event.stopPropagation(); if(confirm('请先登录后再加入购物车，是否现在登录？')) { window.location.href='login'; } return false;">
+                                                                快速加入购物车
+                                                            </button>
+                                                        </c:if>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
                                         </div>
                                         <div class="product-info">
                                             <h3 class="product-name">${product.name}</h3>

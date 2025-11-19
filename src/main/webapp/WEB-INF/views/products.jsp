@@ -27,8 +27,8 @@
             </div>
             <div class="nav-right">
                 <div class="search-box">
-                    <input type="text" placeholder="搜索商品..." class="search-input">
-                    <button class="search-btn">🔍</button>
+                    <input type="text" placeholder="搜索商品..." class="search-input" value="${searchKeyword}">
+                    <button class="search-btn">搜索</button>
                 </div>
                 <div class="user-actions">
                     <c:choose>
@@ -76,6 +76,10 @@
         
         <h2 class="section-title">
             <c:choose>
+                <c:when test="${not empty searchKeyword}">
+                    搜索结果：${searchKeyword}
+                    <span class="search-count">(共找到 ${products.size()} 件商品)</span>
+                </c:when>
                 <c:when test="${not empty currentCategory}">
                     ${currentCategory}
                 </c:when>
@@ -144,9 +148,21 @@
         
         <c:if test="${empty products}">
             <div class="empty-products">
-                <h3>暂无商品</h3>
+                <h3>
+                    <c:choose>
+                        <c:when test="${not empty searchKeyword}">
+                            🔍 未找到相关商品
+                        </c:when>
+                        <c:otherwise>
+                            暂无商品
+                        </c:otherwise>
+                    </c:choose>
+                </h3>
                 <p>
                     <c:choose>
+                        <c:when test="${not empty searchKeyword}">
+                            没有找到与 "${searchKeyword}" 相关的商品，请尝试其他关键词
+                        </c:when>
                         <c:when test="${not empty currentCategory}">
                             该分类下暂无商品
                         </c:when>
@@ -155,7 +171,14 @@
                         </c:otherwise>
                     </c:choose>
                 </p>
-                <a href="home" class="btn-add-product">返回首页</a>
+                <c:choose>
+                    <c:when test="${not empty searchKeyword}">
+                        <a href="products" class="btn-add-product">浏览所有商品</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="home" class="btn-add-product">返回首页</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </c:if>
     </div>

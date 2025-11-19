@@ -41,6 +41,7 @@ public class ProductServlet extends HttpServlet {
         try {
             String productId = request.getParameter("id");
             String category = request.getParameter("category");
+            String search = request.getParameter("search");
             
             if (productId != null) {
                 // 显示单个商品详情
@@ -80,14 +81,24 @@ public class ProductServlet extends HttpServlet {
             } else {
                 // 显示商品列表
                 List<Product> products;
-                if (category != null && !category.trim().isEmpty()) {
+                String pageTitle = "商品列表";
+                
+                if (search != null && !search.trim().isEmpty()) {
+                    // 搜索商品
+                    products = productDAO.searchProducts(search.trim());
+                    request.setAttribute("searchKeyword", search.trim());
+                    pageTitle = "搜索结果： " + search.trim();
+                } else if (category != null && !category.trim().isEmpty()) {
                     // 按分类获取商品
                     products = productDAO.getProductsByCategory(category);
                     request.setAttribute("currentCategory", category);
+                    pageTitle = category;
                 } else {
                     // 获取所有商品
                     products = productDAO.getAllProducts();
                 }
+                
+                request.setAttribute("pageTitle", pageTitle);
                 
                 // 为每个商品加载图片
                 for (Product product : products) {
