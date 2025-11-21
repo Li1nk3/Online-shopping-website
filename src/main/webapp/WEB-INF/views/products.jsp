@@ -8,6 +8,7 @@
     <title>商品列表 - JavaNet 在线商城</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css?v=3.0">
+    <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
 </head>
 <body>
     <!-- 现代化导航栏 -->
@@ -15,7 +16,9 @@
         <div class="nav-container">
             <div class="nav-left">
                 <a href="home" class="logo">
-                    <span class="logo-icon">🛒</span>
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 24 24" class="icon-svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    </span>
                     <span class="logo-text">JavaNet</span>
                 </a>
                 <div class="nav-links">
@@ -34,16 +37,21 @@
                     <c:choose>
                         <c:when test="${sessionScope.user != null}">
                             <a href="cart" class="action-btn cart-btn">
-                                <span class="btn-icon">🛒</span>
+                                <span class="btn-icon">
+                                    <svg viewBox="0 0 24 24" class="icon-svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                </span>
                                 <span>购物车</span>
                             </a>
                             <a href="orders" class="action-btn">
-                                <span class="btn-icon">📋</span>
+                                <span class="btn-icon">
+                                    <svg viewBox="0 0 24 24" class="icon-svg"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                                </span>
                                 <span>订单</span>
                             </a>
                             <div class="user-menu">
                                 <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
                                 <div class="dropdown">
+                                    <a href="profile" class="dropdown-item">个人信息</a>
                                     <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
                                         <a href="product-management" class="dropdown-item">商品管理</a>
                                     </c:if>
@@ -129,7 +137,7 @@
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
                             <p class="product-category">${product.category}</p>
-                            <div class="product-price">¥${product.price}</div>
+                            <div class="product-price">${product.price}</div>
                             <div class="product-stock">
                                 <c:choose>
                                     <c:when test="${product.stock > 0}">
@@ -151,7 +159,7 @@
                 <h3>
                     <c:choose>
                         <c:when test="${not empty searchKeyword}">
-                            🔍 未找到相关商品
+                            <svg viewBox="0 0 24 24" class="icon-svg" style="width: 32px; height: 32px;"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> 未找到相关商品
                         </c:when>
                         <c:otherwise>
                             暂无商品
@@ -200,9 +208,9 @@
         }
         
         function promptLogin() {
-            if(confirm('请先登录后再加入购物车，是否现在登录？')) {
+            showConfirm('请先登录后再加入购物车，是否现在登录？', function() {
                 window.location.href = 'login';
-            }
+            }, { title: '需要登录' });
         }
         
         // 通知功能

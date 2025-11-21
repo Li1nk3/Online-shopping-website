@@ -1,9 +1,11 @@
 package com.javanet.servlet;
 
+import com.google.gson.Gson;
 import com.javanet.dao.OrderDAO;
 import com.javanet.model.Order;
 import com.javanet.model.OrderItem;
 import com.javanet.model.User;
+import com.javanet.util.EmailUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,14 +19,16 @@ import java.util.List;
 @WebServlet("/order-detail")
 public class OrderDetailServlet extends HttpServlet {
     private OrderDAO orderDAO;
+    private Gson gson;
     
     @Override
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
+        gson = new Gson();
     }
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -36,13 +40,19 @@ public class OrderDetailServlet extends HttpServlet {
         
         try {
             String orderIdStr = request.getParameter("id");
-            if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
+            String orderNumber = request.getParameter("orderNumber");
+            
+            Order order = null;
+            
+            if (orderNumber != null && !orderNumber.trim().isEmpty()) {
+                order = orderDAO.getOrderByNumber(orderNumber);
+            } else if (orderIdStr != null && !orderIdStr.trim().isEmpty()) {
+                int orderId = Integer.parseInt(orderIdStr);
+                order = orderDAO.getOrderById(orderId);
+            } else {
                 response.sendRedirect("orders");
                 return;
             }
-            
-            int orderId = Integer.parseInt(orderIdStr);
-            Order order = orderDAO.getOrderById(orderId);
             
             if (order == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "订单不存在");
@@ -56,7 +66,7 @@ public class OrderDetailServlet extends HttpServlet {
             }
             
             // 获取订单商品项
-            List<OrderItem> orderItems = orderDAO.getOrderItems(orderId);
+            List<OrderItem> orderItems = orderDAO.getOrderItems(order.getId());
             
             request.setAttribute("order", order);
             request.setAttribute("orderItems", orderItems);
@@ -82,9 +92,51 @@ public class OrderDetailServlet extends HttpServlet {
             return;
         }
         
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        
         String action = request.getParameter("action");
         
-        if ("cancel".equals(action)) {
+        if ("confirmReceipt".equals(action)) {
+            // 确认收货
+            String orderIdStr = request.getParameter("orderId");
+            
+            if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
+                out.print(gson.toJson(new Response(false, "订单ID不能为空")));
+                return;
+            }
+            
+            try {
+                int orderId = Integer.parseInt(orderIdStr);
+                Order order = orderDAO.getOrderById(orderId);
+                
+                if (order == null || order.getUserId() != user.getId()) {
+                    out.print(gson.toJson(new Response(false, "订单不存在或无权操作")));
+                    return;
+                }
+                
+                // 更新订单状态为已送达
+                boolean success = orderDAO.updateOrderStatus(orderId, "delivered", order.getPaymentStatus());
+                
+                if (success) {
+                    // 发送确认收货邮件
+                    try {
+                        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                            EmailUtil.sendDeliveryConfirmation(user.getEmail(), order.getOrderNumber());
+                        }
+                    } catch (Exception e) {
+                        System.err.println("发送确认收货邮件失败: " + e.getMessage());
+                    }
+                    
+                    out.print(gson.toJson(new Response(true, "确认收货成功")));
+                } else {
+                    out.print(gson.toJson(new Response(false, "确认收货失败")));
+                }
+                
+            } catch (NumberFormatException e) {
+                out.print(gson.toJson(new Response(false, "无效的订单ID")));
+            }
+        } else if ("cancel".equals(action)) {
             String orderIdStr = request.getParameter("orderId");
             
             if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
@@ -97,24 +149,28 @@ public class OrderDetailServlet extends HttpServlet {
                 int orderId = Integer.parseInt(orderIdStr);
                 boolean success = orderDAO.cancelOrder(orderId, user.getId());
                 
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                PrintWriter out = response.getWriter();
-                
                 if (success) {
-                    out.write("{\"success\": true, \"message\": \"订单已成功取消\"}");
+                    out.print(gson.toJson(new Response(true, "订单已成功取消")));
                 } else {
-                    out.write("{\"success\": false, \"message\": \"订单取消失败，可能订单状态不允许取消或订单不存在\"}");
+                    out.print(gson.toJson(new Response(false, "订单取消失败，可能订单状态不允许取消或订单不存在")));
                 }
-                out.flush();
                 
             } catch (NumberFormatException e) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
+                out.print(gson.toJson(new Response(false, "无效的订单ID")));
             }
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"success\": false, \"message\": \"无效的操作\"}");
+            out.print(gson.toJson(new Response(false, "无效的操作")));
+        }
+    }
+    
+    // 响应类
+    private static class Response {
+        private boolean success;
+        private String message;
+        
+        public Response(boolean success, String message) {
+            this.success = success;
+            this.message = message;
         }
     }
 }

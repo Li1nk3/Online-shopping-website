@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>${empty product ? '添加商品' : '编辑商品'} - JavaNet 在线商城</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
 </head>
 <body>
     <div class="header">
@@ -194,7 +195,7 @@
                 button.parentElement.parentElement.remove();
                 updateRadioValues();
             } else {
-                alert('至少需要保留一张图片');
+                showAlert('至少需要保留一张图片', 'warning');
             }
         }
         
@@ -239,20 +240,20 @@
             const category = document.getElementById('category').value;
             
             if (!name || !description || !category) {
-                alert('请填写所有必填字段');
                 e.preventDefault();
+                showAlert('请填写所有必填字段', 'warning');
                 return;
             }
             
             if (price <= 0) {
-                alert('价格必须大于0');
                 e.preventDefault();
+                showAlert('价格必须大于0', 'warning');
                 return;
             }
             
             if (stock < 0) {
-                alert('库存不能为负数');
                 e.preventDefault();
+                showAlert('库存不能为负数', 'warning');
                 return;
             }
             
@@ -266,8 +267,8 @@
             });
             
             if (!hasImage) {
-                alert('请至少添加一张商品图片');
                 e.preventDefault();
+                showAlert('请至少添加一张商品图片', 'warning');
                 return;
             }
         });

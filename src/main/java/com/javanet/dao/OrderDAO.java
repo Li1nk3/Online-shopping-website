@@ -104,6 +104,58 @@ public class OrderDAO {
         return null;
     }
     
+    /**
+     * 根据订单号获取订单
+     * @param orderNumber 订单号
+     * @return 订单对象，如果不存在返回null
+     */
+    public Order getOrderByNumber(String orderNumber) {
+        String sql = "SELECT * FROM orders WHERE order_number = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, orderNumber);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setUserId(rs.getInt("user_id"));
+                order.setOrderNumber(rs.getString("order_number"));
+                order.setTotalAmount(rs.getBigDecimal("total_amount"));
+                order.setStatus(rs.getString("status"));
+                order.setOrderStatus(rs.getString("order_status"));
+                order.setPaymentMethod(rs.getString("payment_method"));
+                order.setPaymentStatus(rs.getString("payment_status"));
+                order.setShippingAddress(rs.getString("shipping_address"));
+                order.setCreateTime(rs.getTimestamp("created_at"));
+                return order;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    /**
+     * 更新订单付款状态
+     * @param orderId 订单ID
+     * @param paymentStatus 付款状态
+     * @param paymentMethod 付款方式
+     * @return 如果更新成功返回true,否则返回false
+     */
+    public boolean updatePaymentStatus(int orderId, String paymentStatus, String paymentMethod) {
+        String sql = "UPDATE orders SET payment_status = ?, payment_method = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, paymentStatus);
+            stmt.setString(2, paymentMethod);
+            stmt.setInt(3, orderId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     public boolean updateOrderStatus(int orderId, String orderStatus, String paymentStatus) {
         String sql = "UPDATE orders SET order_status = ?, payment_status = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -281,5 +333,35 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    /**
+     * 获取所有订单（管理员功能）
+     * @return 所有订单列表
+     */
+    public List<Order> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT * FROM orders ORDER BY created_at DESC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setUserId(rs.getInt("user_id"));
+                order.setOrderNumber(rs.getString("order_number"));
+                order.setTotalAmount(rs.getBigDecimal("total_amount"));
+                order.setStatus(rs.getString("status"));
+                order.setOrderStatus(rs.getString("order_status"));
+                order.setPaymentMethod(rs.getString("payment_method"));
+                order.setPaymentStatus(rs.getString("payment_status"));
+                order.setShippingAddress(rs.getString("shipping_address"));
+                order.setCreateTime(rs.getTimestamp("created_at"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
     }
 }

@@ -32,15 +32,15 @@ public class HomeServlet extends HttpServlet {
                 product.setImages(images);
             }
             
-            // 获取推荐商品（前3个）
+            // 获取推荐商品（前4个）
             List<Product> featuredProducts = allProducts.stream()
-                    .limit(3)
+                    .limit(4)
                     .collect(Collectors.toList());
             
-            // 获取新品（按ID倒序，最新6个）
+            // 获取新品（按ID倒序，最新8个）
             List<Product> newProducts = allProducts.stream()
                     .sorted((p1, p2) -> Integer.compare(p2.getId(), p1.getId()))
-                    .limit(6)
+                    .limit(8)
                     .collect(Collectors.toList());
             
             // 获取所有分类

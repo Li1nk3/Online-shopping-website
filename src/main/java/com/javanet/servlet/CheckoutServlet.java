@@ -5,6 +5,7 @@ import com.javanet.dao.OrderDAO;
 import com.javanet.model.Cart;
 import com.javanet.model.Order;
 import com.javanet.model.User;
+import com.javanet.util.EmailUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -108,8 +109,22 @@ public class CheckoutServlet extends HttpServlet {
                 // 清空购物车
                 cartDAO.clearCart(user.getId());
                 
-                // 重定向到订单确认页面
-                response.sendRedirect("order-confirmation?orderNumber=" + orderNumber);
+                // 发送订单确认邮件
+                try {
+                    if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                        EmailUtil.sendOrderConfirmation(
+                            user.getEmail(),
+                            orderNumber,
+                            totalAmount.toString(),
+                            shippingAddress
+                        );
+                    }
+                } catch (Exception e) {
+                    System.err.println("发送订单确认邮件失败: " + e.getMessage());
+                }
+                
+                // 重定向到订单详情页面
+                response.sendRedirect("order-detail?orderNumber=" + orderNumber);
             } else {
                 request.setAttribute("error", "订单创建失败，请重试");
                 doGet(request, response);

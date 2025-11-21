@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"*.jsp", "/login", "/register", "/products", "/cart", "/checkout", "/orders", "/product-management", "/order-confirmation"})
+@WebFilter(urlPatterns = {"*.jsp", "/login", "/register", "/products", "/cart", "/checkout", "/orders", "/product-management", "/order-confirmation", "/profile", "/payment"})
 public class CharacterEncodingFilter implements Filter {
     
     @Override

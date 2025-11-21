@@ -33,13 +33,15 @@
             <div class="next-steps">
                 <h3>接下来您可以：</h3>
                 <ul>
+                    <li>立即付款以便我们尽快为您发货</li>
                     <li>查看订单详情和物流信息</li>
-                    <li>我们将通过短信/邮件通知您订单状态</li>
+                    <li>我们将通过邮件通知您订单状态</li>
                     <li>如有问题，请联系客服</li>
                 </ul>
             </div>
             
             <div class="action-buttons">
+                <a href="payment?orderNumber=${orderNumber}" class="btn-pay-now-link">立即付款</a>
                 <a href="orders" class="btn-view-orders">查看我的订单</a>
                 <a href="products" class="btn-continue-shopping">继续购物</a>
             </div>
@@ -141,9 +143,28 @@
             transition: all 0.3s ease;
         }
         
+        .btn-pay-now-link {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-pay-now-link:hover {
+            background: linear-gradient(45deg, #ff5252, #e55100);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+            text-decoration: none;
+            color: white;
+        }
+        
         .btn-view-orders:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+            text-decoration: none;
         }
         
         .btn-continue-shopping {
@@ -159,6 +180,25 @@
         .btn-continue-shopping:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+            text-decoration: none;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons a {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </body>

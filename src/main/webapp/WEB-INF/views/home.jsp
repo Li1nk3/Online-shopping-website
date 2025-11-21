@@ -9,6 +9,7 @@
             <title>JavaNet 在线商城 - 品质生活，从这里开始</title>
             <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
             <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css?v=3.0">
+            <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
         </head>
 
         <body>
@@ -17,7 +18,9 @@
                 <div class="nav-container">
                     <div class="nav-left">
                         <a href="home" class="logo">
-                            <span class="logo-icon">🛒</span>
+                            <span class="logo-icon">
+                                <svg viewBox="0 0 24 24" class="icon-svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                            </span>
                             <span class="logo-text">JavaNet</span>
                         </a>
                         <div class="nav-links">
@@ -36,12 +39,16 @@
                             <c:choose>
                                 <c:when test="${sessionScope.user != null}">
                                     <a href="cart" class="action-btn cart-btn">
-                                        <span class="btn-icon">🛒</span>
+                                        <span class="btn-icon">
+                                            <svg viewBox="0 0 24 24" class="icon-svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                        </span>
                                         <span>购物车</span>
                                     </a>
                                     <a href="orders" class="action-btn orders-btn">
-                                        <span class="btn-icon">📋</span>
-                                        <span>我的订单</span>
+                                        <span class="btn-icon">
+                                            <svg viewBox="0 0 24 24" class="icon-svg"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                                        </span>
+                                        <span>订单</span>
                                     </a>
                                     <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
                                         <a href="product-management" class="action-btn management-btn">
@@ -51,6 +58,7 @@
                                     <div class="user-menu">
                                         <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
                                         <div class="dropdown" id="userDropdown">
+                                            <a href="profile" class="dropdown-item">个人信息</a>
                                             <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
                                                 <a href="product-management" class="dropdown-item">商品管理</a>
                                             </c:if>
@@ -60,11 +68,15 @@
                                 </c:when>
                                 <c:otherwise>
                                     <a href="login" class="action-btn login-btn">
-                                        <span class="btn-icon">🔑</span>
+                                        <span class="btn-icon">
+                                            <svg viewBox="0 0 24 24" class="icon-svg"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                                        </span>
                                         <span>登录</span>
                                     </a>
                                     <a href="register" class="action-btn register-btn">
-                                        <span class="btn-icon">📝</span>
+                                        <span class="btn-icon">
+                                            <svg viewBox="0 0 24 24" class="icon-svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                        </span>
                                         <span>注册</span>
                                     </a>
                                 </c:otherwise>
@@ -126,15 +138,15 @@
                                         <a href="products?category=${category}" class="category-item">
                                             <div class="category-icon-small">
                                                 <c:choose>
-                                                    <c:when test="${category == '电子产品'}">&#128241;</c:when>
-                                                    <c:when test="${category == '家居用品'}">&#127968;</c:when>
-                                                    <c:when test="${category == '服装鞋帽'}">&#128085;</c:when>
-                                                    <c:when test="${category == '图书文具'}">&#128218;</c:when>
-                                                    <c:when test="${category == '运动户外'}">&#9917;</c:when>
-                                                    <c:when test="${category == '美妆护肤'}">&#128132;</c:when>
-                                                    <c:when test="${category == '食品饮料'}">&#127828;</c:when>
-                                                    <c:when test="${category == '游戏产品'}">&#127918;</c:when>
-                                                    <c:otherwise>&#128717;</c:otherwise>
+                                                    <c:when test="${category == '电子产品'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></c:when>
+                                                    <c:when test="${category == '家居用品'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></c:when>
+                                                    <c:when test="${category == '服装鞋帽'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></c:when>
+                                                    <c:when test="${category == '图书文具'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg></c:when>
+                                                    <c:when test="${category == '运动户外'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></c:when>
+                                                    <c:when test="${category == '美妆护肤'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg></c:when>
+                                                    <c:when test="${category == '食品饮料'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg></c:when>
+                                                    <c:when test="${category == '游戏产品'}"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></c:when>
+                                                    <c:otherwise><svg viewBox="0 0 24 24" class="icon-svg"><path d="M12 2l-5.5 9h11z"/></svg></c:otherwise>
                                                 </c:choose>
                                             </div>
                                             <span>${category}</span>
@@ -180,7 +192,7 @@
                                         </c:choose>
                                         <div class="product-overlay">
                                             <button class="quick-add-btn"
-                                                onclick="event.stopPropagation(); addToCart(${product.id}); return false;">
+                                                onclick="event.stopPropagation(); addToCart('${product.id}'); return false;">
                                                 快速加入购物车
                                             </button>
                                         </div>
@@ -188,7 +200,7 @@
                                     <div class="product-info">
                                         <h3 class="product-name">${product.name}</h3>
                                         <p class="product-category">${product.category}</p>
-                                        <div class="product-price">¥${product.price}</div>
+                                        <div class="product-price">${product.price}</div>
                                         <div class="product-stock">
                                             <c:choose>
                                                 <c:when test="${product.stock > 0}">
@@ -240,7 +252,7 @@
                                                     <c:when test="${sessionScope.user != null}">
                                                         <c:if test="${product.stock > 0}">
                                                             <button class="quick-add-btn"
-                                                                onclick="event.stopPropagation(); addToCart(${product.id}); return false;">
+                                                                onclick="event.stopPropagation(); addToCart('${product.id}'); return false;">
                                                                 快速加入购物车
                                                             </button>
                                                         </c:if>
@@ -248,7 +260,7 @@
                                                     <c:otherwise>
                                                         <c:if test="${product.stock > 0}">
                                                             <button class="quick-add-btn"
-                                                                onclick="event.stopPropagation(); if(confirm('请先登录后再加入购物车，是否现在登录？')) { window.location.href='login'; } return false;">
+                                                                onclick="event.stopPropagation(); showConfirm('请先登录后再加入购物车，是否现在登录？', function() { window.location.href='login'; }, { title: '需要登录' }); return false;">
                                                                 快速加入购物车
                                                             </button>
                                                         </c:if>
@@ -258,7 +270,18 @@
                                         </div>
                                         <div class="product-info">
                                             <h3 class="product-name">${product.name}</h3>
-                                            <div class="product-price">¥${product.price}</div>
+                                            <p class="product-category">${product.category}</p>
+                                            <div class="product-price">${product.price}</div>
+                                            <div class="product-stock">
+                                                <c:choose>
+                                                    <c:when test="${product.stock > 0}">
+                                                        <span class="in-stock">有库存</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="out-of-stock">缺货</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
                                         </div>
                                     </a>
                                 </div>

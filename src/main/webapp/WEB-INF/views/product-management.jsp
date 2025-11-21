@@ -7,54 +7,77 @@
     <meta charset="UTF-8">
     <title>商品管理 - JavaNet 在线商城</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
 </head>
 <body>
-    <div class="header">
-        <h1><a href="products" style="color: white; text-decoration: none;">JavaNet 在线商城</a></h1>
-        <div class="user-info">
-            <span>欢迎, ${sessionScope.user.username}!</span>
-            <a href="cart" class="btn-cart-nav">购物车</a>
-            <a href="orders" class="btn-cart-nav">我的订单</a>
-            <a href="logout" class="btn-link">退出</a>
+    <!-- 导航栏 -->
+    <nav class="modern-header">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="home" class="logo">
+                    <span class="logo-text">JavaNet</span>
+                </a>
+                <div class="nav-links">
+                    <a href="products" class="nav-link">所有商品</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="user-actions">
+                    <c:if test="${sessionScope.user != null}">
+                        <a href="orders" class="action-btn"><span>我的订单</span></a>
+                        <div class="user-menu">
+                            <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
+                            <div class="dropdown">
+                                <a href="profile" class="dropdown-item">个人信息</a>
+                                <a href="logout" class="dropdown-item">退出登录</a>
+                            </div>
+                        </div>
+                    </c:if>
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
     
     <div class="container">
         <div class="breadcrumb">
-            <a href="products">商品列表</a> > <span>商品管理</span>
+            <a href="home">首页</a> > <span>商品管理</span>
         </div>
         
         <div class="management-header">
             <h2>商品管理</h2>
-            <div style="display: flex; gap: 10px;">
-                <a href="seller-orders" class="btn-add-product" style="background: linear-gradient(45deg, #007bff, #0056b3);">📦 订单管理</a>
-                <a href="product-management?action=add" class="btn-add-product">添加新商品</a>
+            <div class="management-actions">
+                <a href="seller-orders" class="btn-primary">
+                    <svg viewBox="0 0 24 24" class="icon-svg" style="width:18px; height:18px; fill:white;"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm6-3H6v-2h12v2z"/></svg>
+                    订单管理
+                </a>
+                <a href="product-management?action=add" class="btn-primary">
+                    <svg viewBox="0 0 24 24" class="icon-svg" style="width:18px; height:18px; fill:white;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    添加新商品
+                </a>
             </div>
         </div>
         
         <c:if test="${not empty message}">
-            <div class="success-message">${message}</div>
+            <div class="alert alert-success">${message}</div>
         </c:if>
-        
         <c:if test="${not empty error}">
-            <div class="error-message">${error}</div>
+            <div class="alert alert-error">${error}</div>
         </c:if>
         
         <c:choose>
             <c:when test="${empty products}">
-                <div class="empty-products">
-                    <h3>暂无商品</h3>
+                <div class="empty-placeholder">
+                    <h3>您还没有商品</h3>
                     <p>开始添加您的第一个商品吧！</p>
                     <a href="product-management?action=add" class="btn-primary">添加商品</a>
                 </div>
             </c:when>
             <c:otherwise>
-                <div class="products-table">
-                    <table>
+                <div class="management-table-container">
+                    <table class="management-table">
                         <thead>
                             <tr>
-                                <th>图片</th>
-                                <th>商品名称</th>
+                                <th>商品信息</th>
                                 <th>分类</th>
                                 <th>价格</th>
                                 <th>库存</th>
@@ -64,25 +87,27 @@
                         <tbody>
                             <c:forEach var="product" items="${products}">
                                 <tr>
-                                    <td class="product-image-cell">
-                                        <img src="${product.imageUrl}" alt="${product.name}" class="table-product-image">
-                                    </td>
                                     <td>
-                                        <div class="product-info">
-                                            <h4>${product.name}</h4>
-                                            <p class="product-desc">${product.description}</p>
+                                        <div class="product-table-info">
+                                            <img src="${not empty product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/80x80/F0F0F0/999999?text=暂无图片'}" alt="${product.name}" class="table-product-image">
+                                            <div class="product-details">
+                                                <h4>${product.name}</h4>
+                                                <p>${product.description}</p>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>${product.category}</td>
-                                    <td class="price-cell">¥<fmt:formatNumber value="${product.price}" pattern="#,##0.00"/></td>
-                                    <td class="stock-cell">
-                                        <span class="stock-badge ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                                    <td class="price-cell"><fmt:formatNumber value="${product.price}" pattern="#,##0.00"/></td>
+                                    <td>
+                                        <span class="stock-badge ${product.stock > 5 ? 'in-stock' : (product.stock > 0 ? 'low-stock' : 'out-of-stock')}">
                                             ${product.stock}
                                         </span>
                                     </td>
-                                    <td class="actions-cell">
-                                        <a href="product-management?action=edit&id=${product.id}" class="btn-edit">编辑</a>
-                                        <button onclick="confirmDelete('${product.id}', '${product.name}')" class="btn-delete">删除</button>
+                                    <td>
+                                        <div class="actions-cell">
+                                            <a href="product-management?action=edit&id=${product.id}" class="btn-edit">编辑</a>
+                                            <button onclick="confirmDelete('${product.id}', '${product.name}')" class="btn-delete">删除</button>
+                                        </div>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -95,21 +120,27 @@
     
     <script>
         function confirmDelete(productId, productName) {
-            if (confirm('确定要删除商品 "' + productName + '" 吗？此操作不可恢复。')) {
-                window.location.href = 'product-management?action=delete&id=' + productId;
-            }
+            showConfirm('确定要删除商品 "' + productName + '" 吗？此操作不可恢复。', function() {
+                var form = document.createElement('form');
+                form.method = 'post';
+                form.action = 'product-management?action=delete&id=' + productId;
+                document.body.appendChild(form);
+                form.submit();
+            }, { type: 'danger', title: '删除商品' });
         }
-        
-        // 自动隐藏消息
-        setTimeout(function() {
-            var messages = document.querySelectorAll('.success-message, .error-message');
-            messages.forEach(function(msg) {
-                msg.style.opacity = '0';
-                setTimeout(function() {
-                    msg.style.display = 'none';
-                }, 300);
-            });
-        }, 3000);
+
+        function toggleDropdown() {
+            const dropdown = document.querySelector('.dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(event) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.querySelector('.dropdown');
+            if (userMenu && !userMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
