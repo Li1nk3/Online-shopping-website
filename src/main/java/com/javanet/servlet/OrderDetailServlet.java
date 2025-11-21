@@ -59,8 +59,8 @@ public class OrderDetailServlet extends HttpServlet {
                 return;
             }
             
-            // 验证订单是否属于当前用户
-            if (order.getUserId() != user.getId()) {
+            // 验证订单是否属于当前用户，或者用户是管理员
+            if (order.getUserId() != user.getId() && !"admin".equals(user.getRole())) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "无权访问此订单");
                 return;
             }
@@ -110,7 +110,7 @@ public class OrderDetailServlet extends HttpServlet {
                 int orderId = Integer.parseInt(orderIdStr);
                 Order order = orderDAO.getOrderById(orderId);
                 
-                if (order == null || order.getUserId() != user.getId()) {
+                if (order == null || (order.getUserId() != user.getId() && !"admin".equals(user.getRole()))) {
                     out.print(gson.toJson(new Response(false, "订单不存在或无权操作")));
                     return;
                 }
@@ -147,6 +147,7 @@ public class OrderDetailServlet extends HttpServlet {
             
             try {
                 int orderId = Integer.parseInt(orderIdStr);
+                // 对于取消订单操作，只有订单所有者才能取消，管理员不能代为取消
                 boolean success = orderDAO.cancelOrder(orderId, user.getId());
                 
                 if (success) {

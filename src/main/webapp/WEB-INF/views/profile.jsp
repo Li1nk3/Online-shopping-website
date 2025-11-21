@@ -68,7 +68,10 @@
                     </div>
                     
                     <div class="form-actions">
-                        <button type="submit" class="btn-save">保存修改</button>
+                        <button type="submit" class="btn-save" id="profileSubmitBtn">
+                            <span class="btn-text">保存修改</span>
+                            <span class="btn-loading" style="display: none;">处理中...</span>
+                        </button>
                         <button type="button" class="btn-cancel" onclick="window.history.back()">取消</button>
                     </div>
                 </form>
@@ -101,7 +104,10 @@
                     </div>
                     
                     <div class="form-actions">
-                        <button type="submit" class="btn-save">修改密码</button>
+                        <button type="submit" class="btn-save" id="passwordSubmitBtn">
+                            <span class="btn-text">修改密码</span>
+                            <span class="btn-loading" style="display: none;">处理中...</span>
+                        </button>
                         <button type="reset" class="btn-cancel">重置</button>
                     </div>
                 </form>
@@ -223,12 +229,48 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
         .btn-save:hover {
             background: linear-gradient(45deg, #218838, #1ea080);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+        }
+        
+        .btn-save:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-save.loading {
+            background: #6c757d;
+            cursor: wait;
+        }
+        
+        .btn-save.loading:hover {
+            background: #6c757d;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-text, .btn-loading {
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-save.loading .btn-text {
+            opacity: 0.3;
+        }
+        
+        .btn-save:not(.loading) .btn-loading {
+            display: none;
+        }
+        
+        .btn-save.loading .btn-loading {
+            display: inline;
         }
         
         .btn-cancel {
@@ -276,9 +318,13 @@
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const address = document.getElementById('address').value.trim();
+            const submitBtn = document.getElementById('profileSubmitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
             
             if (!email) {
                 showAlert('邮箱地址不能为空', 'warning');
+                shakeElement(submitBtn);
                 return;
             }
             
@@ -286,30 +332,54 @@
             const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
             if (!emailRegex.test(email)) {
                 showAlert('邮箱格式不正确', 'warning');
+                shakeElement(submitBtn);
                 return;
             }
+            
+            // 设置加载状态
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
             
             fetch('profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: 'action=updateInfo&email=' + encodeURIComponent(email) + 
-                      '&phone=' + encodeURIComponent(phone) + 
+                body: 'action=updateInfo&email=' + encodeURIComponent(email) +
+                      '&phone=' + encodeURIComponent(phone) +
                       '&address=' + encodeURIComponent(address)
             })
             .then(response => response.json())
             .then(data => {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                
                 if (data.success) {
+                    // 成功反馈
+                    showSuccessFeedback(submitBtn);
                     showAlert('信息更新成功！', 'success').then(() => {
                         window.location.reload();
                     });
                 } else {
+                    // 失败反馈
+                    shakeElement(submitBtn);
                     showAlert('更新失败: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                
+                shakeElement(submitBtn);
                 showAlert('网络错误，请重试', 'error');
             });
         });
@@ -321,46 +391,104 @@
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitBtn = document.getElementById('passwordSubmitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
             
+            // 前端验证
             if (!currentPassword || !newPassword || !confirmPassword) {
                 showAlert('所有密码字段都不能为空', 'warning');
+                shakeElement(submitBtn);
                 return;
             }
             
             if (newPassword.length < 6) {
                 showAlert('新密码长度至少6位', 'warning');
+                shakeElement(submitBtn);
                 return;
             }
             
             if (newPassword !== confirmPassword) {
                 showAlert('两次输入的新密码不一致', 'warning');
+                shakeElement(submitBtn);
                 return;
             }
+            
+            // 设置加载状态
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
             
             fetch('profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: 'action=updatePassword&currentPassword=' + encodeURIComponent(currentPassword) + 
-                      '&newPassword=' + encodeURIComponent(newPassword) + 
+                body: 'action=updatePassword&currentPassword=' + encodeURIComponent(currentPassword) +
+                      '&newPassword=' + encodeURIComponent(newPassword) +
                       '&confirmPassword=' + encodeURIComponent(confirmPassword)
             })
             .then(response => response.json())
             .then(data => {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                
                 if (data.success) {
+                    // 成功反馈
+                    showSuccessFeedback(submitBtn);
                     showAlert('密码修改成功！', 'success').then(() => {
                         document.getElementById('passwordForm').reset();
                     });
                 } else {
+                    // 失败反馈
+                    shakeElement(submitBtn);
                     showAlert('修改失败: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                
+                shakeElement(submitBtn);
                 showAlert('网络错误，请重试', 'error');
             });
         });
+        
+        // 按钮震动效果
+        function shakeElement(element) {
+            element.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                element.style.animation = '';
+            }, 500);
+        }
+        
+        // 成功反馈效果
+        function showSuccessFeedback(element) {
+            element.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+            element.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 300);
+        }
+        
+        // 添加震动动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

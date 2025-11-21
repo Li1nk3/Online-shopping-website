@@ -96,22 +96,22 @@
                             <h2>联系方式</h2>
                             <div class="contact-grid">
                                 <div class="contact-item">
-                                    <h3>📞 客服热线</h3>
+                                    <h3>客服热线</h3>
                                     <p>400-888-0000</p>
                                     <small>服务时间：周一至周日 9:00-21:00</small>
                                 </div>
                                 <div class="contact-item">
-                                    <h3>📧 邮箱联系</h3>
+                                    <h3>邮箱联系</h3>
                                     <p>service@javanet.com</p>
                                     <small>我们会在24小时内回复您的邮件</small>
                                 </div>
                                 <div class="contact-item">
-                                    <h3>📍 公司地址</h3>
+                                    <h3>公司地址</h3>
                                     <p>北京市朝阳区科技园区创新大厦8楼</p>
                                     <small>邮编：100000</small>
                                 </div>
                                 <div class="contact-item">
-                                    <h3>💬 在线客服</h3>
+                                    <h3>在线客服</h3>
                                     <p>微信客服：JavaNet_Service</p>
                                     <small>工作日在线时间：9:00-18:00</small>
                                 </div>
@@ -127,7 +127,7 @@
                             <h2>加入我们</h2>
                             <p>JavaNet 正在寻找有才华、有激情的人才加入我们的团队！</p>
                             
-                            <h3>🚀 开放职位</h3>
+                            <h3>开放职位</h3>
                             <div class="job-list">
                                 <div class="job-item">
                                     <h4>Java后端开发工程师</h4>
@@ -149,7 +149,7 @@
                                 </div>
                             </div>
                             
-                            <h3>📧 投递简历</h3>
+                            <h3>投递简历</h3>
                             <p>请将简历发送至：<strong>hr@javanet.com</strong></p>
                             <p>邮件标题格式：【应聘职位】-姓名-工作年限</p>
                         </div>
@@ -159,7 +159,7 @@
                         <div class="content-section">
                             <h2>帮助中心</h2>
                             
-                            <h3>❓ 常见问题</h3>
+                            <h3>常见问题</h3>
                             <div class="faq-list">
                                 <div class="faq-item">
                                     <h4>如何注册账户？</h4>
@@ -185,7 +185,7 @@
                         <div class="content-section">
                             <h2>退换货政策</h2>
                             
-                            <h3>📦 退货条件</h3>
+                            <h3>退货条件</h3>
                             <ul>
                                 <li>商品收到后7天内可申请退货</li>
                                 <li>商品必须保持原包装完整</li>
@@ -193,14 +193,14 @@
                                 <li>提供完整的购买凭证</li>
                             </ul>
                             
-                            <h3>🔄 换货条件</h3>
+                            <h3>换货条件</h3>
                             <ul>
                                 <li>商品质量问题可免费换货</li>
                                 <li>尺寸不合适可申请换货（需承担运费）</li>
                                 <li>换货申请需在收货后3天内提出</li>
                             </ul>
                             
-                            <h3>💰 退款说明</h3>
+                            <h3>退款说明</h3>
                             <p>退款将在收到退货商品后3-5个工作日内处理，退款金额将原路返回到您的支付账户。</p>
                         </div>
                     </c:when>
@@ -209,17 +209,17 @@
                         <div class="content-section">
                             <h2>配送信息</h2>
                             
-                            <h3>🚚 配送范围</h3>
+                            <h3>配送范围</h3>
                             <p>我们支持全国配送，偏远地区可能需要额外配送时间。</p>
                             
-                            <h3>⏰ 配送时间</h3>
+                            <h3>配送时间</h3>
                             <ul>
                                 <li><strong>标准配送：</strong>3-5个工作日</li>
                                 <li><strong>快速配送：</strong>1-2个工作日（需额外费用）</li>
                                 <li><strong>次日达：</strong>部分城市支持，当日下单次日送达</li>
                             </ul>
                             
-                            <h3>💵 配送费用</h3>
+                            <h3>配送费用</h3>
                             <ul>
                                 <li>订单满99元免运费</li>
                                 <li>标准配送：8元</li>
@@ -279,7 +279,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 JavaNet 在线商城. 保留所有权利.</p>
+                <p>&copy; 2025 JavaNet 在线商城. 保留所有权利.</p>
             </div>
         </div>
     </footer>

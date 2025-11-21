@@ -33,7 +33,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* ========== 现代化导航栏 (IKEA 风格) ========== */
+/*现代化导航栏 (IKEA 风格)*/
 .modern-header {
     background: var(--bg-white);
     border-bottom: 1px solid var(--border-color);
@@ -424,7 +424,7 @@ a:hover {
     }
 }
 
-/* ========== 分类区域 ========== */
+/*分类区域*/
 .category-section {
     padding: 60px 0;
     background: var(--bg-white);
@@ -474,7 +474,7 @@ a:hover {
     color: var(--text-black);
 }
 
-/* ========== 商品卡片 */
+/*商品卡片 */
 .products-grid, .new-products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -675,7 +675,7 @@ a:hover {
     font-size: 12px;
 }
 
-/* ========== 响应式设计 ========== */
+/*响应式设计*/
 @media (max-width: 768px) {
     .nav-container {
         padding: 15px;
@@ -683,11 +683,11 @@ a:hover {
     }
 
     .nav-links {
-        display: none; /* 移动端隐藏导航链接，实际项目中应改为汉堡菜单 */
+        display: none; 
     }
 
     .search-box {
-        display: none; /* 移动端简化 */
+        display: none; 
     }
 
     .slide-content {
@@ -709,7 +709,7 @@ a:hover {
     }
 }
 
-/* ========== 其他页面通用样式 ========== */
+/*其他页面通用样式*/
 .breadcrumb {
     padding: 20px 0;
     font-size: 12px;
@@ -739,8 +739,8 @@ a:hover {
 .form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid var(--text-black); /* IKEA 风格通常是黑色边框 */
-    border-radius: 0; /* 直角 */
+    border: 1px solid var(--text-black); 
+    border-radius: 0;
     font-size: 16px;
 }
 
@@ -1240,7 +1240,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     }
 }
 
-/* ========== 订单操作按钮优化样式 ========== */
+/*订单操作按钮优化样式*/
 
 .order-actions {
     display: flex;
@@ -1421,7 +1421,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     }
 }
 
-/* ========== 商品详情页 - 新增样式 ========== */
+/*商品详情页 - 新增样式*/
 
 /* 整体布局 */
 .product-detail {
@@ -1783,7 +1783,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     }
 }
 
-/* ========== 登录/注册页面现代化样式 ========== */
+/*登录/注册页面现代化样式*/
 
 .auth-page {
     background-color: var(--bg-light);
@@ -1905,7 +1905,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     border: 1px solid #f5c6cb;
 }
 
-/* ========== 订单详情页 - 新增样式 ========== */
+/*订单详情页 - 新增样式*/
 
 .order-detail-container {
     max-width: 900px;
@@ -2062,7 +2062,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     box-shadow: 0 2px 4px rgba(255, 219, 0, 0.3);
 }
 
-/* ========== 订单详情页 - 商品清单优化 ========== */
+/*订单详情页 - 商品清单优化*/
 
 .order-items-card .cart-items {
     padding: 0 20px;
@@ -2093,7 +2093,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     font-size: 16px;
 }
 
-/* ========== 商品管理页面 - 新增样式 ========== */
+/*商品管理页面 - 新增样式*/
 
 .management-header {
     display: flex;
@@ -2224,7 +2224,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     color: white;
 }
 
-/* ========== 订单状态颜色 ========== */
+/*订单状态颜色*/
 
 .status-badge {
     padding: 5px 12px;
@@ -2329,7 +2329,7 @@ button[type="submit"]:hover, .btn-primary:hover {
 .payment-failed { color: var(--error-red); }
 .payment-refunded { color: #17a2b8; }
 
-/* ========== 结算页面现代化样式 ========== */
+/*结算页面现代化样式*/
 
 .checkout-container {
     display: grid;
@@ -2608,7 +2608,7 @@ button[type="submit"]:hover, .btn-primary:hover {
 }
 
 
-/* ========== 支付页面现代化样式 ========== */
+/*支付页面现代化样式*/
 
 .payment-container {
     max-width: 800px;
@@ -2852,7 +2852,7 @@ button[type="submit"]:hover, .btn-primary:hover {
 }
 
 
-/* ========== 自定义确认对话框样式 ========== */
+/*自定义确认对话框样式*/
 
 .confirm-dialog-overlay {
     position: fixed;
@@ -2957,7 +2957,7 @@ button[type="submit"]:hover, .btn-primary:hover {
     background: #004f93;
 }
 
-/* ========== 通知消息样式 ========== */
+/*通知消息样式*/
 
 .notification {
     position: fixed;
@@ -3014,7 +3014,7 @@ button[type="submit"]:hover, .btn-primary:hover {
 }
 
 
-/* ========== 通用弹窗系统样式 ========== */
+/*通用弹窗系统样式*/
 
 /* 通用确认对话框 */
 .universal-confirm-overlay {
@@ -3242,5 +3242,619 @@ button[type="submit"]:hover, .btn-primary:hover {
     .universal-confirm-body,
     .universal-alert-body {
         padding: 20px 15px;
+    }
+}
+
+/*商品表单页面样式优化*/
+
+.product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.product-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.product-form .form-group {
+    margin-bottom: 0;
+}
+
+.product-form label {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-black);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.product-form input[type="text"],
+.product-form input[type="number"],
+.product-form input[type="url"],
+.product-form textarea,
+.product-form select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--bg-white);
+}
+
+.product-form input:focus,
+.product-form textarea:focus,
+.product-form select:focus {
+    border-color: var(--ikea-blue);
+    box-shadow: 0 0 0 3px rgba(0, 88, 163, 0.1);
+    outline: none;
+}
+
+.product-form textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+}
+
+/* 图片上传区域样式 */
+.images-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.image-input-group {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 15px;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.image-input-group:hover {
+    border-color: var(--ikea-blue);
+    box-shadow: 0 2px 8px rgba(0, 88, 163, 0.1);
+}
+
+.image-url-input {
+    flex: 1;
+}
+
+.image-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.primary-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: var(--bg-light);
+    transition: background 0.2s;
+}
+
+.primary-checkbox:hover {
+    background: #e5e5e5;
+}
+
+.primary-checkbox input[type="radio"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.primary-checkbox input[type="radio"]:checked + span {
+    color: var(--ikea-blue);
+    font-weight: 700;
+}
+
+.image-remove-section .btn-remove-image {
+    background: var(--error-red);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.image-remove-section .btn-remove-image:hover {
+    background: #c82333;
+}
+
+.image-preview-small {
+    width: 60px;
+    height: 60px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-img-small {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+/* 表单操作区域 */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .product-form .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .image-input-group {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .image-controls,
+    .image-remove-section {
+        justify-content: center;
+    }
+    
+    .image-preview-small {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .checkout-section {
+        padding: 20px;
+    }
+    
+    .product-form input[type="text"],
+    .product-form input[type="number"],
+    .product-form input[type="url"],
+    .product-form textarea,
+    .product-form select {
+        padding: 10px 12px;
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+}
+
+/* 添加图片按钮专用样式 */
+.btn-add-image {
+    background: linear-gradient(135deg, var(--ikea-blue), #004f93);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 88, 163, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-add-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-add-image:hover {
+    background: linear-gradient(135deg, #004f93, #003d7a);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 88, 163, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-add-image:hover::before {
+    left: 100%;
+}
+
+.btn-add-image:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 88, 163, 0.3);
+}
+
+/* 改进删除图片按钮样式 */
+.btn-remove-image {
+    background: linear-gradient(135deg, var(--error-red), #c82333);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* ========== 商品分类下拉菜单样式优化 ========== */
+
+/* datalist 自定义样式 */
+.product-form input[list] {
+    position: relative;
+}
+
+/* 为 datalist 创建自定义下拉样式 */
+.product-form .category-input-wrapper {
+    position: relative;
+}
+
+.product-form .category-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.product-form .category-dropdown.show {
+    display: block;
+}
+
+.product-form .category-option {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-form .category-option:last-child {
+    border-bottom: none;
+}
+
+.product-form .category-option:hover {
+    background: var(--bg-light);
+    color: var(--ikea-blue);
+}
+
+.product-form .category-option.selected {
+    background: rgba(0, 88, 163, 0.1);
+    color: var(--ikea-blue);
+    font-weight: 700;
+}
+
+/* 分类图标 */
+.category-option-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-light);
+    border-radius: 50%;
+    font-size: 12px;
+}
+
+.product-form .category-option:hover .category-option-icon {
+    background: var(--ikea-blue);
+    color: white;
+}
+
+/* ========== 确认订单按钮优化样式 ========== */
+
+/* 管理员和卖家的确认订单按钮 */
+.btn-confirm-order {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-confirm-order::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-confirm-order::after {
+    content: '✓';
+    font-size: 16px;
+    margin-left: 4px;
+}
+
+.btn-confirm-order:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-confirm-order:hover::before {
+    left: 100%;
+}
+
+.btn-confirm-order:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+/* 发货按钮样式 */
+.btn-ship-order {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+
+.btn-ship-order:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+
+.btn-ship-order:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+/* 卖家订单操作区域样式优化 */
+.order-actions-seller {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.order-actions-seller form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.order-actions-seller .btn-primary {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.order-actions-seller .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.order-actions-seller .btn-primary:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.order-actions-seller .btn-primary:hover::before {
+    left: 100%;
+}
+
+.order-actions-seller .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .order-actions-seller {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .order-actions-seller .btn-primary,
+    .btn-confirm-order,
+    .btn-ship-order {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* 增强 datalist 原生样式 */
+datalist {
+    position: absolute;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    margin-top: -2px;
+    width: 100%;
+}
+
+datalist option {
+    padding: 12px 15px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+datalist option:hover,
+datalist option:focus {
+    background: var(--bg-light);
+    color: var(--ikea-blue);
+}
+
+datalist option:last-child {
+    border-bottom: none;
+}
+
+/* 输入框获得焦点时的样式 */
+.product-form input[list]:focus + datalist,
+.product-form input[list]:focus::-webkit-calendar-picker-indicator {
+    display: block;
+}
+
+/* 自定义下拉箭头 */
+.product-form .category-input-container {
+    position: relative;
+}
+
+.product-form .category-input-container::after {
+    content: '▼';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-grey);
+    font-size: 12px;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.product-form input[list]:focus + .category-dropdown-indicator::after {
+    color: var(--ikea-blue);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .product-form .category-dropdown {
+        max-height: 150px;
+    }
+    
+    datalist {
+        max-height: 150px;
+    }
+    
+    .product-form .category-option {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
+.btn-remove-image::before {
+    content: '🗑️';
+    font-size: 12px;
+}
+
+.btn-remove-image:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.4);
+}
+
+.btn-remove-image:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(220, 53, 69, 0.3);
+}
+
+/* 图片输入组动画效果 */
+.image-input-group {
+    animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

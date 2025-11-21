@@ -226,10 +226,14 @@
                                     <c:if test="${userRole == 'admin'}">
                                         <!-- 管理员的操作按钮 -->
                                         <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'paid'}">
-                                            <button class="btn-confirm-order" onclick="confirmOrder('${order.id}')">确认订单</button>
+                                            <button class="btn-confirm-order" onclick="confirmOrder('${order.id}')">
+                                                确认订单
+                                            </button>
                                         </c:if>
                                         <c:if test="${order.orderStatus == 'confirmed' || order.orderStatus == 'processing'}">
-                                            <button class="btn-ship-order" onclick="shipOrder('${order.id}')">发货</button>
+                                            <button class="btn-ship-order" onclick="shipOrder('${order.id}')">
+                                                发货
+                                            </button>
                                         </c:if>
                                     </c:if>
                                 </div>

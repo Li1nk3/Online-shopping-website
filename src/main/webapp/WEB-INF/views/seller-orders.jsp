@@ -103,18 +103,23 @@
                                 </div>
                                 
                                 <div class="order-actions-seller">
+                                    <a href="order-detail?id=${order.id}" class="btn-view-detail">查看完整详情</a>
                                     <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'paid'}">
                                         <form action="seller-orders" method="post" style="display: inline;">
                                             <input type="hidden" name="orderId" value="${order.id}">
                                             <input type="hidden" name="action" value="confirm">
-                                            <button type="submit" class="btn-primary">确认订单</button>
+                                            <button type="submit" class="btn-primary">
+                                                确认订单
+                                            </button>
                                         </form>
                                     </c:if>
                                     <c:if test="${order.orderStatus == 'confirmed' || order.orderStatus == 'processing'}">
                                         <form action="seller-orders" method="post" style="display: inline;">
                                             <input type="hidden" name="orderId" value="${order.id}">
                                             <input type="hidden" name="action" value="ship">
-                                            <button type="submit" class="btn-primary">发货</button>
+                                            <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #007bff, #0056b3);">
+                                                发货
+                                            </button>
                                         </form>
                                     </c:if>
                                 </div>
