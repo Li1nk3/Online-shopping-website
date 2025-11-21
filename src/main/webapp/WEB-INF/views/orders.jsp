@@ -140,6 +140,9 @@
                                             <c:when test="${order.orderStatus == 'delivered'}">
                                                 <span class="status-badge status-delivered">已送达</span>
                                             </c:when>
+                                            <c:when test="${order.orderStatus == 'completed'}">
+                                                <span class="status-badge status-completed">已完成</span>
+                                            </c:when>
                                             <c:when test="${order.orderStatus == 'cancelled'}">
                                                 <span class="status-badge status-cancelled">已取消</span>
                                             </c:when>
@@ -215,6 +218,9 @@
                                         </c:if>
                                         <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'pending'}">
                                             <button class="btn-cancel-order" onclick="cancelOrder('${order.id}')">取消订单</button>
+                                        </c:if>
+                                        <c:if test="${order.orderStatus == 'shipped'}">
+                                            <button class="btn-confirm-delivery" onclick="confirmDelivery('${order.id}')">确认收货</button>
                                         </c:if>
                                     </c:if>
                                     <c:if test="${userRole == 'admin'}">
@@ -335,6 +341,37 @@
                 
                 xhr.send('action=ship&orderId=' + encodeURIComponent(orderId));
             }, { type: 'success', title: '订单发货' });
+        }
+        
+        function confirmDelivery(orderId) {
+            showConfirm('确定要确认收货吗？', function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'orders', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200 && response.success) {
+                                showAlert('确认收货成功！', 'success').then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                showAlert('确认收货失败: ' + (response.message || '未知错误'), 'error');
+                            }
+                        } catch (e) {
+                            showAlert('确认收货失败: 服务器响应格式错误', 'error');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    showAlert('确认收货失败: 网络错误', 'error');
+                };
+                
+                xhr.send('action=confirmDelivery&orderId=' + encodeURIComponent(orderId));
+            }, { type: 'success', title: '确认收货' });
         }
         // 搜索功能
         document.querySelector('.search-input').addEventListener('keypress', function(e) {

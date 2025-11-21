@@ -1,8 +1,10 @@
 package com.javanet.servlet;
 
 import com.javanet.dao.OrderDAO;
+import com.javanet.dao.UserDAO;
 import com.javanet.model.Order;
 import com.javanet.model.User;
+import com.javanet.util.EmailUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +18,12 @@ import java.util.List;
 @WebServlet("/orders")
 public class OrdersServlet extends HttpServlet {
     private OrderDAO orderDAO;
+    private UserDAO userDAO;
     
     @Override
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
+        userDAO = new UserDAO();
     }
     
     @Override
@@ -106,6 +110,7 @@ public class OrdersServlet extends HttpServlet {
             
             try {
                 int orderId = Integer.parseInt(orderIdStr);
+                Order order = orderDAO.getOrderById(orderId);
                 boolean success = orderDAO.updateOrderStatus(orderId, "confirmed", "paid");
                 
                 response.setContentType("application/json");
@@ -113,6 +118,7 @@ public class OrdersServlet extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 
                 if (success) {
+                    
                     out.write("{\"success\": true, \"message\": \"订单已确认\"}");
                 } else {
                     out.write("{\"success\": false, \"message\": \"确认订单失败\"}");
@@ -126,6 +132,7 @@ public class OrdersServlet extends HttpServlet {
         } else if ("ship".equals(action)) {
             // 管理员发货
             String orderIdStr = request.getParameter("orderId");
+            String trackingNumber = request.getParameter("trackingNumber");
             
             if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -135,6 +142,7 @@ public class OrdersServlet extends HttpServlet {
             
             try {
                 int orderId = Integer.parseInt(orderIdStr);
+                Order order = orderDAO.getOrderById(orderId);
                 boolean success = orderDAO.updateOrderStatus(orderId, "shipped", "paid");
                 
                 response.setContentType("application/json");
@@ -142,6 +150,7 @@ public class OrdersServlet extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 
                 if (success) {
+                    
                     out.write("{\"success\": true, \"message\": \"订单已发货\"}");
                 } else {
                     out.write("{\"success\": false, \"message\": \"发货失败\"}");
@@ -152,9 +161,71 @@ public class OrdersServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
             }
+        } else if ("confirmDelivery".equals(action)) {
+            // 用户确认收货
+            String orderIdStr = request.getParameter("orderId");
+            
+            if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"success\": false, \"message\": \"订单ID不能为空\"}");
+                return;
+            }
+            
+            try {
+                int orderId = Integer.parseInt(orderIdStr);
+                Order order = orderDAO.getOrderById(orderId);
+                
+                // 验证订单归属
+                if (order == null || order.getUserId() != user.getId()) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write("{\"success\": false, \"message\": \"无权操作此订单\"}");
+                    return;
+                }
+                
+                boolean success = orderDAO.updateOrderStatus(orderId, "completed", "paid");
+                
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+                
+                if (success) {
+                    // 发送收货确认邮件
+                    try {
+                        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                            EmailUtil.sendDeliveryConfirmation(
+                                user.getEmail(),
+                                order.getOrderNumber()
+                            );
+                        }
+                    } catch (Exception e) {
+                        System.err.println("发送收货确认邮件失败: " + e.getMessage());
+                    }
+                    
+                    out.write("{\"success\": true, \"message\": \"确认收货成功\"}");
+                } else {
+                    out.write("{\"success\": false, \"message\": \"确认收货失败\"}");
+                }
+                out.flush();
+                
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
+            }
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("{\"success\": false, \"message\": \"无效的操作\"}");
+        }
+    }
+    
+    /**
+     * 根据用户ID获取用户信息
+     */
+    private User getUserById(int userId) {
+        try {
+            return userDAO.getUserById(userId);
+        } catch (Exception e) {
+            System.err.println("获取用户信息失败: " + e.getMessage());
+            return null;
         }
     }
 }

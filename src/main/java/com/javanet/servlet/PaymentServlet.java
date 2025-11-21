@@ -111,19 +111,6 @@ public class PaymentServlet extends HttpServlet {
                 boolean updated = orderDAO.updatePaymentStatus(order.getId(), "paid", paymentMethod);
                 
                 if (updated) {
-                    // 发送付款确认邮件
-                    try {
-                        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-                            EmailUtil.sendPaymentConfirmation(
-                                user.getEmail(),
-                                orderNumber,
-                                order.getTotalAmount().toString(),
-                                paymentMethod
-                            );
-                        }
-                    } catch (Exception e) {
-                        System.err.println("发送付款确认邮件失败: " + e.getMessage());
-                    }
                     
                     result.put("success", true);
                     result.put("message", "付款成功");

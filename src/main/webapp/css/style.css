@@ -1353,6 +1353,59 @@ button[type="submit"]:hover, .btn-primary:hover {
     margin-left: 4px;
 }
 
+/* 确认收货按钮样式 */
+.btn-confirm-delivery {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(111, 66, 193, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-confirm-delivery::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-confirm-delivery:hover {
+    background: linear-gradient(135deg, #5a32a3, #4b288d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.5);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-confirm-delivery:hover::before {
+    left: 100%;
+}
+
+.btn-confirm-delivery:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(111, 66, 193, 0.4);
+}
+
+.btn-confirm-delivery::after {
+    content: '✓';
+    font-size: 16px;
+    margin-left: 4px;
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
     .order-actions {
@@ -2234,6 +2287,35 @@ button[type="submit"]:hover, .btn-primary:hover {
     color: white;
     font-weight: 700;
     box-shadow: 0 2px 4px rgba(0, 138, 0, 0.3);
+}
+.status-completed {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(111, 66, 193, 0.4);
+    border: 1px solid rgba(111, 66, 193, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.status-completed::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.status-completed:hover::before {
+    left: 100%;
+}
+
+.status-completed:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.5);
 }
 .status-cancelled {
     background-color: #dc3545;

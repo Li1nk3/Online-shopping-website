@@ -9,41 +9,12 @@ import java.util.Date;
  * 邮件发送工具类
  */
 public class EmailUtil {
-    private static final String SMTP_HOST = "smtp.outlook.com";
+    // 163邮箱配置
+    private static final String SMTP_HOST = "smtp.163.com";
     private static final String SMTP_PORT = "465";
-    private static final String FROM_EMAIL = "javaonlineshopnet@outlook.com"; // 需要配置实际邮箱
-    private static final String FROM_PASSWORD = "Du2YVdNMrbcRqFF"; // 需要配置授权码
+    private static final String FROM_EMAIL = "javaonlineshop@163.com"; // 请替换为您的163邮箱
+    private static final String FROM_PASSWORD = "JYx5j6kNjsiKCHKd"; // 请替换为163邮箱授权码
     private static final String FROM_NAME = "JavaNet在线商城";
-    
-    /**
-     * 发送订单确认邮件
-     */
-    public static boolean sendOrderConfirmation(String toEmail, String orderNumber, 
-                                               String totalAmount, String shippingAddress) {
-        String subject = "订单确认 - " + orderNumber;
-        String content = buildOrderConfirmationEmail(orderNumber, totalAmount, shippingAddress);
-        return sendEmail(toEmail, subject, content);
-    }
-    
-    /**
-     * 发送付款成功邮件
-     */
-    public static boolean sendPaymentConfirmation(String toEmail, String orderNumber, 
-                                                  String totalAmount, String paymentMethod) {
-        String subject = "付款成功通知 - " + orderNumber;
-        String content = buildPaymentConfirmationEmail(orderNumber, totalAmount, paymentMethod);
-        return sendEmail(toEmail, subject, content);
-    }
-    
-    /**
-     * 发送发货通知邮件
-     */
-    public static boolean sendShippingNotification(String toEmail, String orderNumber, 
-                                                   String trackingNumber) {
-        String subject = "订单已发货 - " + orderNumber;
-        String content = buildShippingNotificationEmail(orderNumber, trackingNumber);
-        return sendEmail(toEmail, subject, content);
-    }
     
     /**
      * 发送收货确认邮件
@@ -58,6 +29,12 @@ public class EmailUtil {
      * 通用邮件发送方法
      */
     private static boolean sendEmail(String toEmail, String subject, String content) {
+        // 验证邮箱格式
+        if (!isValidEmail(toEmail)) {
+            System.err.println("无效的邮箱地址: " + toEmail);
+            return false;
+        }
+        
         try {
             // 配置邮件服务器属性
             Properties props = new Properties();
@@ -65,7 +42,10 @@ public class EmailUtil {
             props.put("mail.smtp.port", SMTP_PORT);
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.ssl.enable", "true");
-            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+            props.put("mail.smtp.ssl.trust", "*");
+            props.put("mail.smtp.connectiontimeout", "15000");
+            props.put("mail.smtp.timeout", "15000");
+            props.put("mail.smtp.writetimeout", "15000");
             
             // 创建会话
             Session session = Session.getInstance(props, new Authenticator() {
@@ -74,6 +54,9 @@ public class EmailUtil {
                     return new PasswordAuthentication(FROM_EMAIL, FROM_PASSWORD);
                 }
             });
+            
+            // 调试模式（生产环境保持关闭）
+            // session.setDebug(true);
             
             // 创建邮件消息
             Message message = new MimeMessage(session);
@@ -85,93 +68,37 @@ public class EmailUtil {
             
             // 发送邮件
             Transport.send(message);
-            System.out.println("邮件发送成功: " + toEmail);
+            System.out.println("邮件发送成功: " + toEmail + " - 主题: " + subject);
             return true;
             
-        } catch (Exception e) {
+        } catch (AuthenticationFailedException e) {
+            System.err.println("邮件认证失败: 请检查邮箱账号和密码/授权码是否正确");
+            e.printStackTrace();
+            return false;
+        } catch (SendFailedException e) {
+            System.err.println("邮件发送失败: 收件人地址无效或邮箱服务器拒绝");
+            e.printStackTrace();
+            return false;
+        } catch (MessagingException e) {
             System.err.println("邮件发送失败: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            System.err.println("邮件发送出现未知错误: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
     
     /**
-     * 构建订单确认邮件内容
+     * 验证邮箱格式是否正确
      */
-    private static String buildOrderConfirmationEmail(String orderNumber, 
-                                                     String totalAmount, String shippingAddress) {
-        return "<!DOCTYPE html>" +
-               "<html>" +
-               "<head><meta charset='UTF-8'></head>" +
-               "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
-               "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-               "<h2 style='color: #0F7B0F; border-bottom: 2px solid #0F7B0F; padding-bottom: 10px;'>订单确认</h2>" +
-               "<p>尊敬的客户，您好！</p>" +
-               "<p>感谢您在JavaNet在线商城购物，您的订单已成功提交。</p>" +
-               "<div style='background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
-               "<p><strong>订单号：</strong>" + orderNumber + "</p>" +
-               "<p><strong>订单金额：</strong>¥" + totalAmount + "</p>" +
-               "<p><strong>收货地址：</strong>" + shippingAddress + "</p>" +
-               "</div>" +
-               "<p>我们将尽快为您处理订单，请耐心等待。</p>" +
-               "<p>如有任何问题，请随时联系我们的客服。</p>" +
-               "<hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'>" +
-               "<p style='color: #666; font-size: 12px;'>此邮件由系统自动发送，请勿直接回复。</p>" +
-               "</div>" +
-               "</body>" +
-               "</html>";
-    }
-    
-    /**
-     * 构建付款确认邮件内容
-     */
-    private static String buildPaymentConfirmationEmail(String orderNumber, 
-                                                       String totalAmount, String paymentMethod) {
-        return "<!DOCTYPE html>" +
-               "<html>" +
-               "<head><meta charset='UTF-8'></head>" +
-               "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
-               "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-               "<h2 style='color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 10px;'>付款成功</h2>" +
-               "<p>尊敬的客户，您好！</p>" +
-               "<p>您的订单付款已成功完成。</p>" +
-               "<div style='background: #d1e7dd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #28a745;'>" +
-               "<p><strong>订单号：</strong>" + orderNumber + "</p>" +
-               "<p><strong>付款金额：</strong>¥" + totalAmount + "</p>" +
-               "<p><strong>付款方式：</strong>" + getPaymentMethodName(paymentMethod) + "</p>" +
-               "</div>" +
-               "<p>我们将尽快为您安排发货，请留意物流信息。</p>" +
-               "<p>感谢您的信任与支持！</p>" +
-               "<hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'>" +
-               "<p style='color: #666; font-size: 12px;'>此邮件由系统自动发送，请勿直接回复。</p>" +
-               "</div>" +
-               "</body>" +
-               "</html>";
-    }
-    
-    /**
-     * 构建发货通知邮件内容
-     */
-    private static String buildShippingNotificationEmail(String orderNumber, String trackingNumber) {
-        return "<!DOCTYPE html>" +
-               "<html>" +
-               "<head><meta charset='UTF-8'></head>" +
-               "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
-               "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
-               "<h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 10px;'>订单已发货</h2>" +
-               "<p>尊敬的客户，您好！</p>" +
-               "<p>您的订单已发货，请注意查收。</p>" +
-               "<div style='background: #cfe2ff; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #007bff;'>" +
-               "<p><strong>订单号：</strong>" + orderNumber + "</p>" +
-               "<p><strong>物流单号：</strong>" + trackingNumber + "</p>" +
-               "</div>" +
-               "<p>您可以通过物流单号查询包裹的实时位置。</p>" +
-               "<p>预计3-5个工作日送达，请保持电话畅通。</p>" +
-               "<hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'>" +
-               "<p style='color: #666; font-size: 12px;'>此邮件由系统自动发送，请勿直接回复。</p>" +
-               "</div>" +
-               "</body>" +
-               "</html>";
+    public static boolean isValidEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
     }
     
     /**
@@ -198,25 +125,5 @@ public class EmailUtil {
                "</div>" +
                "</body>" +
                "</html>";
-    }
-    
-    /**
-     * 获取付款方式名称
-     */
-    private static String getPaymentMethodName(String paymentMethod) {
-        switch (paymentMethod) {
-            case "online":
-                return "在线支付";
-            case "cod":
-                return "货到付款";
-            case "alipay":
-                return "支付宝";
-            case "wechat":
-                return "微信支付";
-            case "bank":
-                return "银行卡";
-            default:
-                return paymentMethod;
-        }
     }
 }
