@@ -126,6 +126,78 @@
                             </div>
                         </div>
                     </div>
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <div class="slide-text">
+                                <h1>时尚服装</h1>
+                                <p>潮流服饰，展现个性风采</p>
+                                <a href="products?category=服装鞋帽" class="cta-button">选购服装</a>
+                            </div>
+                            <div class="slide-image">
+                                <img src="https://esgnews.com/wp-content/uploads/2022/04/Sustainable-Fashion-1024x576.jpeg" alt="时尚服装">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <div class="slide-text">
+                                <h1>图书文具</h1>
+                                <p>知识的海洋，学习的伙伴</p>
+                                <a href="products?category=图书文具" class="cta-button">浏览图书</a>
+                            </div>
+                            <div class="slide-image">
+                                <img src="https://www.xinhuanet.com/politics/2020-04/21/1125882997_15874276820781n.jpg" alt="图书文具">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <div class="slide-text">
+                                <h1>运动户外</h1>
+                                <p>健康生活，从运动开始</p>
+                                <a href="products?category=运动户外" class="cta-button">运动装备</a>
+                            </div>
+                            <div class="slide-image">
+                                <img src="https://cdn.shopify.com/s/files/1/0012/8647/1793/files/Ciclista-carretera-montana-a-tamano.jpg?v=1617524062" alt="运动户外">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <div class="slide-text">
+                                <h1>美妆护肤</h1>
+                                <p>美丽从这里开始，呵护你的肌肤</p>
+                                <a href="products?category=美妆护肤" class="cta-button">美妆专区</a>
+                            </div>
+                            <div class="slide-image">
+                                <img src="https://p2.itc.cn/q_70/images01/20210511/8ed4f7c8490f46b681f13c76ec1648c3.png" alt="美妆护肤">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <div class="slide-text">
+                                <h1>食品饮料</h1>
+                                <p>美味生活，健康饮食</p>
+                                <a href="products?category=食品饮料" class="cta-button">美食专区</a>
+                            </div>
+                            <div class="slide-image">
+                                <img src="https://cf.dtcj.com/20364eac-b360-48c7-b90f-3032d3f9ec99.jpg" alt="食品饮料">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <div class="slide-text">
+                                <h1>游戏产品</h1>
+                                <p>娱乐世界，畅玩游戏</p>
+                                <a href="products?category=游戏产品" class="cta-button">游戏专区</a>
+                            </div>
+                            <div class="slide-image">
+                                <img src="https://www.nxp.com.cn/assets/images/en/blogs/BL-DEVELOPING-ACCESSORIES-1.jpg" alt="游戏产品">
+                            </div>
+                        </div>
+                    </div>
                     <c:if test="${not empty categories}">
                         <div class="carousel-slide">
                             <div class="slide-content">
@@ -161,8 +233,14 @@
                     <button class="nav-dot active" onclick="showSlide(0)"></button>
                     <button class="nav-dot" onclick="showSlide(1)"></button>
                     <button class="nav-dot" onclick="showSlide(2)"></button>
+                    <button class="nav-dot" onclick="showSlide(3)"></button>
+                    <button class="nav-dot" onclick="showSlide(4)"></button>
+                    <button class="nav-dot" onclick="showSlide(5)"></button>
+                    <button class="nav-dot" onclick="showSlide(6)"></button>
+                    <button class="nav-dot" onclick="showSlide(7)"></button>
+                    <button class="nav-dot" onclick="showSlide(8)"></button>
                     <c:if test="${not empty categories}">
-                        <button class="nav-dot" onclick="showSlide(3)"></button>
+                        <button class="nav-dot" onclick="showSlide(9)"></button>
                     </c:if>
                 </div>
             </section>
@@ -319,17 +397,9 @@
                                 <li><a href="info/membership">会员权益</a></li>
                             </ul>
                         </div>
-                        <div class="footer-section">
-                            <h4>关注我们</h4>
-                            <div class="social-links">
-                                <a href="#" class="social-link">微信</a>
-                                <a href="#" class="social-link">微博</a>
-                                <a href="#" class="social-link">抖音</a>
-                            </div>
-                        </div>
                     </div>
                     <div class="footer-bottom">
-                        <p>&copy; 2024 JavaNet 在线商城. 保留所有权利.</p>
+                        <p>&copy; 2025 JavaNet 在线商城. 保留所有权利.</p>
                     </div>
                 </div>
             </footer>

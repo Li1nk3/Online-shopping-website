@@ -608,7 +608,7 @@ a:hover {
 /* 页脚 */
 .modern-footer {
     background: var(--bg-light);
-    padding: 60px 0 30px;
+    padding: 80px 0 40px;
     margin-top: 80px;
     border-top: 1px solid var(--border-color);
 }
@@ -616,14 +616,14 @@ a:hover {
 .footer-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    margin-bottom: 60px;
+    gap: 60px;
+    margin-bottom: 80px;
 }
 
 .footer-section h4 {
     font-size: 14px;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     color: var(--text-black);
 }
 
@@ -632,12 +632,13 @@ a:hover {
 }
 
 .footer-section li {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .footer-section a {
     color: var(--text-grey);
     font-size: 14px;
+    transition: color 0.2s;
 }
 
 .footer-section a:hover {
@@ -669,7 +670,7 @@ a:hover {
 
 .footer-bottom {
     border-top: 1px solid #e5e5e5;
-    padding-top: 30px;
+    padding-top: 40px;
     text-align: center;
     color: var(--text-grey);
     font-size: 12px;
@@ -683,11 +684,11 @@ a:hover {
     }
 
     .nav-links {
-        display: none; 
+        display: none;
     }
 
     .search-box {
-        display: none; 
+        display: none;
     }
 
     .slide-content {
@@ -707,6 +708,46 @@ a:hover {
     .hero-carousel {
         height: 500px;
     }
+
+    /* 页脚响应式优化 */
+    .modern-footer {
+        padding: 60px 0 30px;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        margin-bottom: 60px;
+    }
+
+    .footer-section h4 {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .social-links {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-footer {
+        padding: 40px 0 20px;
+    }
+
+    .footer-content {
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .footer-section h4 {
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+
+    .footer-section li {
+        margin-bottom: 12px;
+    }
 }
 
 /*其他页面通用样式*/
@@ -722,6 +763,247 @@ a:hover {
 
 .breadcrumb a:hover {
     color: var(--text-black);
+}
+
+/* 信息页面样式优化 */
+.info-page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-black);
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid var(--ikea-blue);
+}
+
+.content-section {
+    line-height: 1.8;
+}
+
+.content-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-black);
+    margin: 40px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+.content-section h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-black);
+    margin: 30px 0 15px 0;
+}
+
+.content-section h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-black);
+    margin: 25px 0 10px 0;
+}
+
+.content-section p {
+    font-size: 16px;
+    color: var(--text-grey);
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+.content-section ul {
+    margin: 20px 0;
+    padding-left: 30px;
+}
+
+.content-section li {
+    font-size: 16px;
+    color: var(--text-grey);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.content-section strong {
+    color: var(--text-black);
+    font-weight: 600;
+}
+
+/* 联系方式网格布局 */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.contact-item {
+    padding: 25px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--ikea-blue);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.contact-item h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ikea-blue);
+    margin-bottom: 10px;
+}
+
+.contact-item p {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-black);
+    margin-bottom: 5px;
+}
+
+.contact-item small {
+    font-size: 14px;
+    color: var(--text-grey);
+}
+
+/* 职位列表样式 */
+.job-list {
+    margin: 30px 0;
+}
+
+.job-item {
+    padding: 25px;
+    margin-bottom: 20px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--success-green);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.job-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.job-item h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--success-green);
+    margin-bottom: 15px;
+}
+
+.job-item p {
+    margin-bottom: 10px;
+}
+
+/* FAQ列表样式 */
+.faq-list {
+    margin: 30px 0;
+}
+
+.faq-item {
+    padding: 20px;
+    margin-bottom: 15px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--ikea-blue);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.faq-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.faq-item h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ikea-blue);
+    margin-bottom: 10px;
+}
+
+.faq-item p {
+    font-size: 15px;
+    margin-bottom: 0;
+}
+
+/* 信息页面响应式设计 */
+@media (max-width: 768px) {
+    .info-page-container {
+        margin: 20px auto;
+        padding: 25px;
+        border-radius: 8px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+    
+    .content-section h2 {
+        font-size: 20px;
+        margin: 30px 0 15px 0;
+    }
+    
+    .content-section h3 {
+        font-size: 18px;
+        margin: 25px 0 12px 0;
+    }
+    
+    .content-section p {
+        font-size: 15px;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .contact-item,
+    .job-item,
+    .faq-item {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-page-container {
+        margin: 15px;
+        padding: 20px;
+    }
+    
+    .page-title {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .content-section h2 {
+        font-size: 18px;
+    }
+    
+    .content-section h3 {
+        font-size: 16px;
+    }
+    
+    .content-section p,
+    .content-section li {
+        font-size: 14px;
+    }
+    
+    .contact-item,
+    .job-item,
+    .faq-item {
+        padding: 15px;
+    }
 }
 
 /* 表单样式 */

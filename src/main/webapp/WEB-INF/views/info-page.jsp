@@ -276,14 +276,6 @@
                         <li><a href="${pageContext.request.contextPath}/info/membership">会员权益</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h4>关注我们</h4>
-                    <div class="social-links">
-                        <a href="#" class="social-link">微信</a>
-                        <a href="#" class="social-link">微博</a>
-                        <a href="#" class="social-link">抖音</a>
-                    </div>
-                </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 JavaNet 在线商城. 保留所有权利.</p>
