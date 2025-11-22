@@ -364,4 +364,54 @@ public class OrderDAO {
         }
         return orders;
     }
+    
+    /**
+     * 删除订单（管理员功能）
+     * @param orderId 订单ID
+     * @return 如果删除成功返回true,否则返回false
+     */
+    public boolean deleteOrder(int orderId) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false); // 开始事务
+            
+            // 首先删除订单项
+            String deleteItemsSql = "DELETE FROM order_items WHERE order_id = ?";
+            try (PreparedStatement deleteItemsStmt = conn.prepareStatement(deleteItemsSql)) {
+                deleteItemsStmt.setInt(1, orderId);
+                deleteItemsStmt.executeUpdate();
+            }
+            
+            // 然后删除订单
+            String deleteOrderSql = "DELETE FROM orders WHERE id = ?";
+            try (PreparedStatement deleteOrderStmt = conn.prepareStatement(deleteOrderSql)) {
+                deleteOrderStmt.setInt(1, orderId);
+                int result = deleteOrderStmt.executeUpdate();
+                
+                conn.commit(); // 提交事务
+                return result > 0;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback(); // 回滚事务
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // 恢复自动提交
+                    conn.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
+        }
+    }
 }

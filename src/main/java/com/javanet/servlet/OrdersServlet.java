@@ -118,8 +118,27 @@ public class OrdersServlet extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 
                 if (success) {
-                    
-                    out.write("{\"success\": true, \"message\": \"订单已确认\"}");
+                    // 发送订单确认邮件给买家
+                    try {
+                        User buyer = userDAO.getUserById(order.getUserId());
+                        if (buyer != null && buyer.getEmail() != null && !buyer.getEmail().trim().isEmpty()) {
+                            boolean emailSent = EmailUtil.sendOrderConfirmation(buyer.getEmail(), order.getOrderNumber());
+                            if (emailSent) {
+                                out.write("{\"success\": true, \"message\": \"订单已确认，已通知买家\"}");
+                                System.out.println("订单确认邮件已发送给买家: " + buyer.getEmail());
+                            } else {
+                                out.write("{\"success\": true, \"message\": \"订单已确认，但邮件通知发送失败\"}");
+                                System.err.println("订单确认邮件发送失败: " + buyer.getEmail());
+                            }
+                        } else {
+                            out.write("{\"success\": true, \"message\": \"订单已确认，但买家邮箱无效\"}");
+                            System.err.println("买家邮箱无效或为空");
+                        }
+                    } catch (Exception e) {
+                        out.write("{\"success\": true, \"message\": \"订单已确认，但邮件通知发送异常\"}");
+                        System.err.println("发送订单确认邮件时出现异常: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 } else {
                     out.write("{\"success\": false, \"message\": \"确认订单失败\"}");
                 }
@@ -150,8 +169,27 @@ public class OrdersServlet extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 
                 if (success) {
-                    
-                    out.write("{\"success\": true, \"message\": \"订单已发货\"}");
+                    // 发送发货通知邮件给买家
+                    try {
+                        User buyer = userDAO.getUserById(order.getUserId());
+                        if (buyer != null && buyer.getEmail() != null && !buyer.getEmail().trim().isEmpty()) {
+                            boolean emailSent = EmailUtil.sendShipmentNotification(buyer.getEmail(), order.getOrderNumber());
+                            if (emailSent) {
+                                out.write("{\"success\": true, \"message\": \"订单已发货，已通知买家\"}");
+                                System.out.println("发货通知邮件已发送给买家: " + buyer.getEmail());
+                            } else {
+                                out.write("{\"success\": true, \"message\": \"订单已发货，但邮件通知发送失败\"}");
+                                System.err.println("发货通知邮件发送失败: " + buyer.getEmail());
+                            }
+                        } else {
+                            out.write("{\"success\": true, \"message\": \"订单已发货，但买家邮箱无效\"}");
+                            System.err.println("买家邮箱无效或为空");
+                        }
+                    } catch (Exception e) {
+                        out.write("{\"success\": true, \"message\": \"订单已发货，但邮件通知发送异常\"}");
+                        System.err.println("发送发货通知邮件时出现异常: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 } else {
                     out.write("{\"success\": false, \"message\": \"发货失败\"}");
                 }
@@ -211,10 +249,53 @@ public class OrdersServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
             }
-        } else {
+    } else if ("delete".equals(action)) {
+        // 管理员删除订单
+        String orderIdStr = request.getParameter("orderId");
+        
+        if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"success\": false, \"message\": \"无效的操作\"}");
+            response.getWriter().write("{\"success\": false, \"message\": \"订单ID不能为空\"}");
+            return;
         }
+        
+        // 检查是否是管理员
+        if (!"admin".equals(user.getRole())) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("{\"success\": false, \"message\": \"只有管理员才能删除订单\"}");
+            return;
+        }
+        
+        try {
+            int orderId = Integer.parseInt(orderIdStr);
+            Order order = orderDAO.getOrderById(orderId);
+            
+            if (order == null) {
+                response.getWriter().write("{\"success\": false, \"message\": \"订单不存在\"}");
+                return;
+            }
+            
+            boolean success = orderDAO.deleteOrder(orderId);
+            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            
+            if (success) {
+                out.write("{\"success\": true, \"message\": \"订单已删除\"}");
+            } else {
+                out.write("{\"success\": false, \"message\": \"删除订单失败\"}");
+            }
+            out.flush();
+            
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
+        }
+    } else {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.getWriter().write("{\"success\": false, \"message\": \"无效的操作\"}");
+    }
     }
     
     /**

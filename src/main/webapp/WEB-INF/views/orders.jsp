@@ -211,8 +211,8 @@
                                 
                                 <div class="order-actions">
                                     <a href="order-detail?id=${order.id}" class="btn-view-detail">查看完整详情</a>
-                                    <c:if test="${userRole == 'user' || userRole == null}">
-                                        <!-- 普通用户的操作按钮 -->
+                                    <c:if test="${sessionScope.user.id == order.userId}">
+                                        <!-- 订单所有者的操作按钮 -->
                                         <c:if test="${order.paymentStatus == 'pending' && order.orderStatus != 'cancelled'}">
                                             <a href="payment?orderNumber=${order.orderNumber}" class="btn-pay-now">立即付款</a>
                                         </c:if>
@@ -235,6 +235,9 @@
                                                 发货
                                             </button>
                                         </c:if>
+                                        <button class="btn-delete-order" onclick="deleteOrder('${order.id}')">
+                                            删除订单
+                                        </button>
                                     </c:if>
                                 </div>
                             </div>
@@ -376,6 +379,37 @@
                 
                 xhr.send('action=confirmDelivery&orderId=' + encodeURIComponent(orderId));
             }, { type: 'success', title: '确认收货' });
+        }
+        
+        function deleteOrder(orderId) {
+            showConfirm('确定要删除这个订单吗？删除后无法恢复！', function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'orders', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200 && response.success) {
+                                showAlert('订单删除成功！', 'success').then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                showAlert('删除订单失败: ' + (response.message || '未知错误'), 'error');
+                            }
+                        } catch (e) {
+                            showAlert('删除订单失败: 服务器响应格式错误', 'error');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    showAlert('删除订单失败: 网络错误', 'error');
+                };
+                
+                xhr.send('action=delete&orderId=' + encodeURIComponent(orderId));
+            }, { type: 'danger', title: '删除订单' });
         }
         // 搜索功能
         document.querySelector('.search-input').addEventListener('keypress', function(e) {

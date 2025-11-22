@@ -5,6 +5,7 @@ import com.javanet.dao.UserDAO;
 import com.javanet.model.Order;
 import com.javanet.model.OrderItem;
 import com.javanet.model.User;
+import com.javanet.util.EmailUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -116,19 +117,78 @@ public class SellerOrdersServlet extends HttpServlet {
                 case "confirm":
                     // 确认订单
                     success = orderDAO.updateOrderStatus(orderId, "confirmed", order.getPaymentStatus());
-                    message = success ? "订单已确认" : "确认订单失败";
+                    if (success) {
+                        // 发送订单确认邮件给买家
+                        try {
+                            User buyer = userDAO.getUserById(order.getUserId());
+                            if (buyer != null && buyer.getEmail() != null && !buyer.getEmail().trim().isEmpty()) {
+                                boolean emailSent = EmailUtil.sendOrderConfirmation(buyer.getEmail(), order.getOrderNumber());
+                                if (emailSent) {
+                                    message = "订单已确认，已通知买家";
+                                    System.out.println("订单确认邮件已发送给买家: " + buyer.getEmail());
+                                } else {
+                                    message = "订单已确认，但邮件通知发送失败";
+                                    System.err.println("订单确认邮件发送失败: " + buyer.getEmail());
+                                }
+                            } else {
+                                message = "订单已确认，但买家邮箱无效，无法发送通知";
+                                System.err.println("买家邮箱无效或为空");
+                            }
+                        } catch (Exception e) {
+                            message = "订单已确认，但邮件通知发送异常";
+                            System.err.println("发送订单确认邮件时出现异常: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        message = "确认订单失败";
+                    }
                     break;
                     
                 case "ship":
                     // 发货
                     success = orderDAO.updateOrderStatus(orderId, "shipped", order.getPaymentStatus());
-                    message = success ? "订单已发货" : "发货失败";
+                    if (success) {
+                        // 发送发货通知邮件给买家
+                        try {
+                            User buyer = userDAO.getUserById(order.getUserId());
+                            if (buyer != null && buyer.getEmail() != null && !buyer.getEmail().trim().isEmpty()) {
+                                boolean emailSent = EmailUtil.sendShipmentNotification(buyer.getEmail(), order.getOrderNumber());
+                                if (emailSent) {
+                                    message = "订单已发货，已通知买家";
+                                    System.out.println("发货通知邮件已发送给买家: " + buyer.getEmail());
+                                } else {
+                                    message = "订单已发货，但邮件通知发送失败";
+                                    System.err.println("发货通知邮件发送失败: " + buyer.getEmail());
+                                }
+                            } else {
+                                message = "订单已发货，但买家邮箱无效，无法发送通知";
+                                System.err.println("买家邮箱无效或为空");
+                            }
+                        } catch (Exception e) {
+                            message = "订单已发货，但邮件通知发送异常";
+                            System.err.println("发送发货通知邮件时出现异常: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        message = "发货失败";
+                    }
                     break;
                     
                 case "deliver":
                     // 标记为已送达
                     success = orderDAO.updateOrderStatus(orderId, "delivered", order.getPaymentStatus());
                     message = success ? "订单已送达" : "操作失败";
+                    break;
+                    
+                case "delete":
+                    // 删除订单（仅管理员可用）
+                    if (!"admin".equals(user.getRole())) {
+                        response.sendRedirect("seller-orders?error=只有管理员才能删除订单");
+                        return;
+                    }
+                    
+                    success = orderDAO.deleteOrder(orderId);
+                    message = success ? "订单已删除" : "删除订单失败";
                     break;
                     
                 default:

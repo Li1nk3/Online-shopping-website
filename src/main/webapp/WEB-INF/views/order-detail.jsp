@@ -8,6 +8,7 @@
     <title>订单详情 - JavaNet 在线商城</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -32,8 +33,18 @@
                 <div class="user-actions">
                     <c:choose>
                         <c:when test="${sessionScope.user != null}">
-                            <a href="cart" class="action-btn cart-btn"><span>购物车</span></a>
-                            <a href="orders" class="action-btn"><span>订单</span></a>
+                            <a href="cart" class="action-btn cart-btn">
+                                <span class="btn-icon">
+                                    <svg viewBox="0 0 24 24" class="icon-svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                </span>
+                                <span>购物车</span>
+                            </a>
+                            <a href="orders" class="action-btn">
+                                <span class="btn-icon">
+                                    <svg viewBox="0 0 24 24" class="icon-svg"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                                </span>
+                                <span>订单</span>
+                            </a>
                             <div class="user-menu">
                                 <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
                                 <div class="dropdown">
@@ -113,7 +124,7 @@
                                 <c:when test="${order.paymentStatus == 'paid'}"><span class="payment-paid">已支付</span></c:when>
                                 <c:when test="${order.paymentStatus == 'failed'}"><span class="payment-failed">支付失败</span></c:when>
                                 <c:when test="${order.paymentStatus == 'refunded'}"><span class="payment-refunded">已退款</span></c:when>
-                                <c:otherwise>${order.paymentStatus}</c:otherwise>
+                                <c:otherwise><span class="payment-pending">${order.paymentStatus}</span></c:otherwise>
                             </c:choose>
                         </span>
                     </div>
@@ -166,21 +177,118 @@
             <!-- 操作按钮 -->
             <div class="order-actions-detail">
                 <a href="orders" class="btn-back-order btn-primary">返回订单列表</a>
-                <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'pending'}">
+                <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'pending' && sessionScope.user.id == order.userId}">
                     <button class="btn-cancel-order" onclick="cancelOrder('${order.id}')">取消订单</button>
                 </c:if>
-                <c:if test="${order.paymentStatus == 'pending' && order.orderStatus != 'cancelled'}">
+                <c:if test="${order.paymentStatus == 'pending' && order.orderStatus != 'cancelled' && sessionScope.user.id == order.userId}">
                     <a href="payment?orderNumber=${order.orderNumber}" class="btn-pay-now">立即付款</a>
                 </c:if>
-                <c:if test="${order.orderStatus == 'shipped'}">
-                    <button class="btn-confirm-receipt" onclick="confirmReceipt('${order.id}')">确认收货</button>
+                <c:if test="${order.orderStatus == 'shipped' && sessionScope.user.id == order.userId}">
+                    <button class="btn-confirm-delivery" onclick="confirmReceipt('${order.id}')">确认收货</button>
                 </c:if>
             </div>
         </div>
     </div>
     
     <script>
-        // JavaScript functions (cancelOrder, confirmReceipt, etc.) remain the same
+        // 用户下拉菜单功能
+        function toggleDropdown() {
+            const dropdown = document.querySelector('.dropdown');
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.querySelector('.dropdown');
+            
+            if (userMenu && dropdown && !userMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // 搜索功能
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    window.location.href = 'products?search=' + encodeURIComponent(query);
+                }
+            }
+        });
+
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const query = document.querySelector('.search-input').value.trim();
+            if (query) {
+                window.location.href = 'products?search=' + encodeURIComponent(query);
+            }
+        });
+
+        // 取消订单功能
+        function cancelOrder(orderId) {
+            showConfirm('确定要取消这个订单吗？', function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'orders', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200 && response.success) {
+                                showAlert('订单已成功取消！', 'success').then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                showAlert('取消订单失败: ' + (response.message || '未知错误'), 'error');
+                            }
+                        } catch (e) {
+                            showAlert('取消订单失败: 服务器响应格式错误', 'error');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    showAlert('取消订单失败: 网络错误', 'error');
+                };
+                
+                xhr.send('action=cancel&orderId=' + encodeURIComponent(orderId));
+            }, { type: 'danger', title: '取消订单' });
+        }
+
+        // 确认收货功能
+        function confirmReceipt(orderId) {
+            showConfirm('确定要确认收货吗？', function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'orders', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200 && response.success) {
+                                showAlert('确认收货成功！', 'success').then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                showAlert('确认收货失败: ' + (response.message || '未知错误'), 'error');
+                            }
+                        } catch (e) {
+                            showAlert('确认收货失败: 服务器响应格式错误', 'error');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    showAlert('确认收货失败: 网络错误', 'error');
+                };
+                
+                xhr.send('action=confirmDelivery&orderId=' + encodeURIComponent(orderId));
+            }, { type: 'success', title: '确认收货' });
+        }
     </script>
 </body>
 </html>

@@ -17,6 +17,24 @@ public class EmailUtil {
     private static final String FROM_NAME = "JavaNet在线商城";
     
     /**
+     * 发送订单确认邮件
+     */
+    public static boolean sendOrderConfirmation(String toEmail, String orderNumber) {
+        String subject = "订单确认 - " + orderNumber;
+        String content = buildOrderConfirmationEmail(orderNumber);
+        return sendEmail(toEmail, subject, content);
+    }
+    
+    /**
+     * 发送发货通知邮件
+     */
+    public static boolean sendShipmentNotification(String toEmail, String orderNumber) {
+        String subject = "发货通知 - " + orderNumber;
+        String content = buildShipmentNotificationEmail(orderNumber);
+        return sendEmail(toEmail, subject, content);
+    }
+    
+    /**
      * 发送收货确认邮件
      */
     public static boolean sendDeliveryConfirmation(String toEmail, String orderNumber) {
@@ -99,6 +117,62 @@ public class EmailUtil {
         }
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
+    }
+    
+    /**
+     * 构建订单确认邮件内容
+     */
+    private static String buildOrderConfirmationEmail(String orderNumber) {
+        return "<!DOCTYPE html>" +
+               "<html>" +
+               "<head><meta charset='UTF-8'></head>" +
+               "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+               "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+               "<h2 style='color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 10px;'>订单确认</h2>" +
+               "<p>尊敬的客户，您好！</p>" +
+               "<p>您的订单已经确认，我们将尽快为您安排发货。</p>" +
+               "<div style='background: #d1e7dd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #28a745;'>" +
+               "<p><strong>订单号：</strong>" + orderNumber + "</p>" +
+               "<p><strong>订单状态：</strong>已确认</p>" +
+               "<p><strong>预计发货：</strong>1-2个工作日</p>" +
+               "</div>" +
+               "<p>订单确认后，我们会尽快处理您的商品。</p>" +
+               "<p>发货后您将收到发货通知邮件，请保持关注。</p>" +
+               "<p>如有任何问题，请随时联系我们的客服。</p>" +
+               "<p>感谢您的信任与支持！</p>" +
+               "<hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'>" +
+               "<p style='color: #666; font-size: 12px;'>此邮件由系统自动发送，请勿直接回复。</p>" +
+               "</div>" +
+               "</body>" +
+               "</html>";
+    }
+    
+    /**
+     * 构建发货通知邮件内容
+     */
+    private static String buildShipmentNotificationEmail(String orderNumber) {
+        return "<!DOCTYPE html>" +
+               "<html>" +
+               "<head><meta charset='UTF-8'></head>" +
+               "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+               "<div style='max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+               "<h2 style='color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 10px;'>发货通知</h2>" +
+               "<p>尊敬的客户，您好！</p>" +
+               "<p>您的订单已经发货，正在配送途中。</p>" +
+               "<div style='background: #d1ecf1; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #007bff;'>" +
+               "<p><strong>订单号：</strong>" + orderNumber + "</p>" +
+               "<p><strong>订单状态：</strong>已发货</p>" +
+               "<p><strong>预计送达：</strong>3-5个工作日</p>" +
+               "</div>" +
+               "<p>请您保持电话畅通，快递员可能会联系您确认收货信息。</p>" +
+               "<p>商品送达后，请及时检查商品数量和外观是否完好。</p>" +
+               "<p>如有任何问题，请随时联系我们的客服。</p>" +
+               "<p>感谢您的耐心等待！</p>" +
+               "<hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'>" +
+               "<p style='color: #666; font-size: 12px;'>此邮件由系统自动发送，请勿直接回复。</p>" +
+               "</div>" +
+               "</body>" +
+               "</html>";
     }
     
     /**
