@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>${empty product ? '添加商品' : '编辑商品'} - JavaNet 在线商城</title>
+    <link rel="icon" href="${pageContext.request.contextPath}/images/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
     <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
 </head>

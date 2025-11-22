@@ -220,7 +220,7 @@ public class OrdersServlet extends HttpServlet {
                     return;
                 }
                 
-                boolean success = orderDAO.updateOrderStatus(orderId, "completed", "paid");
+                boolean success = orderDAO.updateOrderStatus(orderId, "delivered", "paid");
                 
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
@@ -249,7 +249,7 @@ public class OrdersServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
             }
-    } else if ("delete".equals(action)) {
+        } else if ("delete".equals(action)) {
         // 管理员删除订单
         String orderIdStr = request.getParameter("orderId");
         

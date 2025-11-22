@@ -7,7 +7,7 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>JavaNet 在线商城 - 品质生活，从这里开始</title>
-            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+            <link rel="icon" href="${pageContext.request.contextPath}/images/favicon.svg" type="image/svg+xml">
             <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css?v=3.0">
             <script src="${pageContext.request.contextPath}/js/universal-dialog.js"></script>
         </head>

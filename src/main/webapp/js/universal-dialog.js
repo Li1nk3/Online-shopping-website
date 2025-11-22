@@ -1,20 +1,44 @@
 // 通用弹窗系统
 class UniversalDialog {
     constructor() {
+        this.isInitialized = false;
         this.init();
     }
 
     init() {
-        // 创建确认对话框HTML
-        this.createConfirmDialog();
-        // 创建提示对话框HTML
-        this.createAlertDialog();
+        // 检查DOM是否准备好
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.createDialogs();
+            });
+        } else {
+            this.createDialogs();
+        }
+    }
+
+    createDialogs() {
+        try {
+            // 确保body存在
+            if (!document.body) {
+                console.warn('Document body not ready, retrying...');
+                setTimeout(() => this.createDialogs(), 100);
+                return;
+            }
+
+            // 创建确认对话框HTML
+            this.createConfirmDialog();
+            // 创建提示对话框HTML
+            this.createAlertDialog();
+            this.isInitialized = true;
+        } catch (error) {
+            console.error('Error initializing UniversalDialog:', error);
+        }
     }
 
     // 创建确认对话框
     createConfirmDialog() {
         const confirmHTML = `
-            <div id="universalConfirmOverlay" class="universal-confirm-overlay">
+            <div id="universalConfirmOverlay" class="universal-confirm-overlay" style="display: none;">
                 <div class="universal-confirm-dialog">
                     <div class="universal-confirm-header">
                         <h3>确认操作</h3>
@@ -35,7 +59,7 @@ class UniversalDialog {
     // 创建提示对话框
     createAlertDialog() {
         const alertHTML = `
-            <div id="universalAlertOverlay" class="universal-alert-overlay">
+            <div id="universalAlertOverlay" class="universal-alert-overlay" style="display: none;">
                 <div class="universal-alert-dialog">
                     <div class="universal-alert-header" id="alertHeader">
                         <h3>提示</h3>
@@ -151,15 +175,95 @@ class UniversalDialog {
     }
 }
 
-// 创建全局实例
-const universalDialog = new UniversalDialog();
+// 全局变量声明
+let universalDialog = null;
+let isInitializing = false;
+let initCallbacks = [];
 
 // 替换原生confirm和alert函数
 function showConfirm(message, callback, options = {}) {
+    if (!universalDialog) {
+        if (!isInitializing) {
+            // 如果还没有初始化，使用原生confirm作为后备
+            const result = confirm(message);
+            if (result && callback) {
+                callback();
+            }
+            return Promise.resolve(result);
+        } else {
+            // 正在初始化中，等待初始化完成
+            return new Promise((resolve) => {
+                initCallbacks.push(() => {
+                    if (universalDialog && universalDialog.isInitialized) {
+                        universalDialog.showConfirm(message, callback, options).then(resolve);
+                    } else {
+                        // 如果初始化失败，使用原生confirm
+                        const result = confirm(message);
+                        if (result && callback) {
+                            callback();
+                        }
+                        resolve(result);
+                    }
+                });
+            });
+        }
+    }
+    
+    // 检查对话框是否已完全初始化
+    if (!universalDialog.isInitialized) {
+        // 等待初始化完成
+        return new Promise((resolve) => {
+            const checkInit = () => {
+                if (universalDialog.isInitialized) {
+                    universalDialog.showConfirm(message, callback, options).then(resolve);
+                } else {
+                    setTimeout(checkInit, 50);
+                }
+            };
+            checkInit();
+        });
+    }
+    
     return universalDialog.showConfirm(message, callback, options);
 }
 
 function showAlert(message, type, options = {}) {
+    if (!universalDialog) {
+        if (!isInitializing) {
+            // 如果还没有初始化，使用原生alert作为后备
+            alert(message);
+            return Promise.resolve();
+        } else {
+            // 正在初始化中，等待初始化完成
+            return new Promise((resolve) => {
+                initCallbacks.push(() => {
+                    if (universalDialog && universalDialog.isInitialized) {
+                        universalDialog.showAlert(message, type, options).then(resolve);
+                    } else {
+                        // 如果初始化失败，使用原生alert
+                        alert(message);
+                        resolve();
+                    }
+                });
+            });
+        }
+    }
+    
+    // 检查对话框是否已完全初始化
+    if (!universalDialog.isInitialized) {
+        // 等待初始化完成
+        return new Promise((resolve) => {
+            const checkInit = () => {
+                if (universalDialog.isInitialized) {
+                    universalDialog.showAlert(message, type, options).then(resolve);
+                } else {
+                    setTimeout(checkInit, 50);
+                }
+            };
+            checkInit();
+        });
+    }
+    
     return universalDialog.showAlert(message, type, options);
 }
 
@@ -172,11 +276,40 @@ function universalAlert(message, type, options = {}) {
     return showAlert(message, type, options);
 }
 
-// 自动初始化（当DOM加载完成时）
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        new UniversalDialog();
-    });
-} else {
-    new UniversalDialog();
+// 初始化函数
+function initUniversalDialog() {
+    if (universalDialog || isInitializing) {
+        return;
+    }
+    
+    isInitializing = true;
+    
+    try {
+        universalDialog = new UniversalDialog();
+        
+        // 执行所有等待的回调
+        while (initCallbacks.length > 0) {
+            const callback = initCallbacks.shift();
+            try {
+                callback();
+            } catch (e) {
+                console.error('Error executing init callback:', e);
+            }
+        }
+    } catch (e) {
+        console.error('Error initializing UniversalDialog:', e);
+    } finally {
+        isInitializing = false;
+    }
 }
+
+// 立即尝试初始化
+initUniversalDialog();
+
+// 如果DOM还没加载完成，再次尝试
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initUniversalDialog);
+}
+
+// 确保在window加载完成后也尝试初始化
+window.addEventListener('load', initUniversalDialog);
