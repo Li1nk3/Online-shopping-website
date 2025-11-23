@@ -183,7 +183,7 @@ public class OrderDAO {
     public boolean hasUserPurchasedProduct(int userId, int productId) {
         String sql = "SELECT COUNT(*) FROM orders o " +
                     "INNER JOIN order_items oi ON o.id = oi.order_id " +
-                    "WHERE o.user_id = ? AND oi.product_id = ? AND o.payment_status = '已支付'";
+                    "WHERE o.user_id = ? AND oi.product_id = ? AND o.payment_status = 'paid'";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);

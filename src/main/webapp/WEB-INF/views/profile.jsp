@@ -46,8 +46,10 @@
                         <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
                         <div class="dropdown">
                             <a href="profile" class="dropdown-item">个人信息</a>
+                            <a href="browse-history" class="dropdown-item">浏览记录</a>
                             <c:if test="${sessionScope.user.role == 'seller' || sessionScope.user.role == 'admin'}">
                                 <a href="product-management" class="dropdown-item">商品管理</a>
+                                <a href="customer-management" class="dropdown-item">客户管理</a>
                             </c:if>
                             <a href="logout" class="dropdown-item">退出登录</a>
                         </div>
@@ -68,7 +70,6 @@
             <!-- 基本信息卡片 -->
             <div class="profile-card">
                 <h3 class="card-title">
-                    <span class="title-icon">👤</span>
                     基本信息
                 </h3>
                 
@@ -117,7 +118,6 @@
             <!-- 密码修改卡片 -->
             <div class="profile-card">
                 <h3 class="card-title">
-                    <span class="title-icon">🔒</span>
                     修改密码
                 </h3>
                 
@@ -345,6 +345,7 @@
                 width: 100%;
             }
         }
+        
     </style>
     
     <script>
@@ -561,6 +562,38 @@
                 dropdown.style.display = 'none';
             }
         });
+        
+        // 查看商品详情
+        function viewProduct(productId) {
+            window.location.href = 'products?id=' + productId;
+        }
+        
+        // 清空浏览记录
+        function clearBrowseHistory() {
+            if (confirm('确定要清空所有浏览记录吗？此操作不可恢复。')) {
+                fetch('profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=clearBrowseHistory'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('浏览记录已清空', 'success').then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        showAlert('清空失败: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('网络错误，请重试', 'error');
+                });
+            }
+        }
     </script>
 </body>
 </html>

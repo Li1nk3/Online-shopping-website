@@ -31,3 +31,11 @@ logs/
 Thumbs.db
 *.swp
 *.swo
+
+# 忽略测试调试文件
+test_customer_stats.html
+TestCustomerStats.java
+TestCustomerStats.class
+cookies.txt
+src/main/java/com/javanet/servlet/TestDatabaseServlet.java
+src/main/webapp/WEB-INF/views/test-customer-management.jsp

@@ -11,10 +11,25 @@ public class DatabaseConnection {
     
     public static Connection getConnection() throws SQLException {
         try {
+            System.out.println("DEBUG: Loading MySQL driver...");
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            
+            System.out.println("DEBUG: Attempting to connect to database...");
+            System.out.println("DEBUG: URL=" + URL);
+            System.out.println("DEBUG: USERNAME=" + USERNAME);
+            
+            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            System.out.println("DEBUG: Database connection established successfully!");
+            
+            return conn;
         } catch (ClassNotFoundException e) {
+            System.err.println("ERROR: MySQL Driver not found: " + e.getMessage());
             throw new SQLException("MySQL Driver not found", e);
+        } catch (SQLException e) {
+            System.err.println("ERROR: Database connection failed: " + e.getMessage());
+            System.err.println("ERROR: SQL State: " + e.getSQLState());
+            System.err.println("ERROR: Error Code: " + e.getErrorCode());
+            throw e;
         }
     }
 }

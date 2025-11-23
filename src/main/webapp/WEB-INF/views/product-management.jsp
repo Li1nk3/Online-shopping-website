@@ -41,6 +41,9 @@
                             <span class="user-name" onclick="toggleDropdown()">欢迎, ${sessionScope.user.username} ▼</span>
                             <div class="dropdown">
                                 <a href="profile" class="dropdown-item">个人信息</a>
+                                <a href="browse-history" class="dropdown-item">浏览记录</a>
+                                <a href="product-management" class="dropdown-item">商品管理</a>
+                                <a href="customer-management" class="dropdown-item">客户管理</a>
                                 <a href="logout" class="dropdown-item">退出登录</a>
                             </div>
                         </div>

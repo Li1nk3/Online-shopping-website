@@ -2,7 +2,10 @@ package com.javanet.servlet;
 
 import com.google.gson.Gson;
 import com.javanet.dao.UserDAO;
+import com.javanet.dao.CustomerBrowseLogDAO;
 import com.javanet.model.User;
+import com.javanet.model.CustomerBrowseLog;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,11 +24,13 @@ import java.util.Map;
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
     private UserDAO userDAO;
+    private CustomerBrowseLogDAO browseLogDAO;
     private Gson gson;
     
     @Override
     public void init() throws ServletException {
         userDAO = new UserDAO();
+        browseLogDAO = new CustomerBrowseLogDAO();
         gson = new Gson();
     }
     
@@ -46,6 +51,8 @@ public class ProfileServlet extends HttpServlet {
             session.setAttribute("user", latestUser);
             request.setAttribute("user", latestUser);
         }
+        
+        // 不再在个人信息页面显示浏览记录，移到独立页面
         
         request.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(request, response);
     }
@@ -161,6 +168,18 @@ public class ProfileServlet extends HttpServlet {
             } else {
                 result.put("success", false);
                 result.put("message", "密码修改失败，请重试");
+            }
+            
+        } else if ("clearBrowseHistory".equals(action)) {
+            // 清空浏览记录
+            boolean success = browseLogDAO.clearUserBrowseLogs(user.getId());
+            
+            if (success) {
+                result.put("success", true);
+                result.put("message", "浏览记录已清空");
+            } else {
+                result.put("success", false);
+                result.put("message", "清空失败，请重试");
             }
             
         } else {

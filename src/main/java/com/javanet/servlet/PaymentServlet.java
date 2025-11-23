@@ -2,8 +2,12 @@ package com.javanet.servlet;
 
 import com.google.gson.Gson;
 import com.javanet.dao.OrderDAO;
+import com.javanet.dao.CustomerPurchaseStatsDAO;
+import com.javanet.dao.ProductDAO;
 import com.javanet.model.Order;
+import com.javanet.model.OrderItem;
 import com.javanet.model.User;
+import com.javanet.model.Product;
 import com.javanet.util.EmailUtil;
 
 import javax.servlet.ServletException;
@@ -15,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,11 +28,15 @@ import java.util.Map;
 @WebServlet("/payment")
 public class PaymentServlet extends HttpServlet {
     private OrderDAO orderDAO;
+    private CustomerPurchaseStatsDAO purchaseStatsDAO;
+    private ProductDAO productDAO;
     private Gson gson;
     
     @Override
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
+        purchaseStatsDAO = new CustomerPurchaseStatsDAO();
+        productDAO = new ProductDAO();
         gson = new Gson();
     }
     
@@ -111,6 +120,8 @@ public class PaymentServlet extends HttpServlet {
                 boolean updated = orderDAO.updatePaymentStatus(order.getId(), "paid", paymentMethod);
                 
                 if (updated) {
+                    // 付款成功后更新客户购买统计
+                    updatePurchaseStatsAsync(order);
                     
                     result.put("success", true);
                     result.put("message", "付款成功");
@@ -149,5 +160,37 @@ public class PaymentServlet extends HttpServlet {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    /**
+     * 异步更新客户购买统计
+     */
+    private void updatePurchaseStatsAsync(Order order) {
+        // 在新线程中更新购买统计，避免影响页面响应速度
+        new Thread(() -> {
+            try {
+                // 获取订单的所有商品项
+                List<OrderItem> orderItems = orderDAO.getOrderItems(order.getId());
+                
+                for (OrderItem item : orderItems) {
+                    Product product = productDAO.getProductById(item.getProductId());
+                    if (product != null) {
+                        // 更新客户购买统计
+                        purchaseStatsDAO.addOrUpdatePurchaseStats(
+                            order.getUserId(),
+                            product.getSellerId(),
+                            item.getPrice().multiply(new java.math.BigDecimal(item.getQuantity()))
+                        );
+                        System.out.println("更新购买统计成功: 用户ID=" + order.getUserId() +
+                                         ", 卖家ID=" + product.getSellerId() +
+                                         ", 金额=" + item.getPrice().multiply(new java.math.BigDecimal(item.getQuantity())));
+                    }
+                }
+            } catch (Exception e) {
+                // 更新统计失败不应该影响主要功能
+                System.err.println("更新购买统计失败: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
