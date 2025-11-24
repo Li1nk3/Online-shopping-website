@@ -25,9 +25,9 @@
                         </a>
                         <div class="nav-links">
                             <a href="products" class="nav-link">所有商品</a>
-                            <a href="products?category=电子产品" class="nav-link">电子产品</a>
-                            <a href="products?category=家居用品" class="nav-link">家居用品</a>
-                            <a href="products?category=服装鞋帽" class="nav-link">服装鞋帽</a>
+                            <a href="products?category=<c:out value='电子产品'/>" class="nav-link">电子产品</a>
+                            <a href="products?category=<c:out value='家居用品'/>" class="nav-link">家居用品</a>
+                            <a href="products?category=<c:out value='服装鞋帽'/>" class="nav-link">服装鞋帽</a>
                         </div>
                     </div>
                     <div class="nav-right">
@@ -109,7 +109,7 @@
                             <div class="slide-text">
                                 <h1>新品上市</h1>
                                 <p>最新科技产品，引领时尚潮流</p>
-                                <a href="products?category=电子产品" class="cta-button">查看新品</a>
+                                <a href="products?category=<c:out value='电子产品'/>" class="cta-button">查看新品</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://www.ventuz.com.cn/uploadfile/202210/e98fdea035899f3.png" alt="新品上市">
@@ -121,7 +121,7 @@
                             <div class="slide-text">
                                 <h1>家居好物</h1>
                                 <p>打造温馨舒适的家居环境</p>
-                                <a href="products?category=家居用品" class="cta-button">探索家居</a>
+                                <a href="products?category=<c:out value='家居用品'/>" class="cta-button">探索家居</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://tion-china.cn/wp-content/uploads/2020/03/dongdognban.jpg" alt="家居好物">
@@ -133,7 +133,7 @@
                             <div class="slide-text">
                                 <h1>时尚服装</h1>
                                 <p>潮流服饰，展现个性风采</p>
-                                <a href="products?category=服装鞋帽" class="cta-button">选购服装</a>
+                                <a href="products?category=<c:out value='服装鞋帽'/>" class="cta-button">选购服装</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://esgnews.com/wp-content/uploads/2022/04/Sustainable-Fashion-1024x576.jpeg" alt="时尚服装">
@@ -145,7 +145,7 @@
                             <div class="slide-text">
                                 <h1>图书文具</h1>
                                 <p>知识的海洋，学习的伙伴</p>
-                                <a href="products?category=图书文具" class="cta-button">浏览图书</a>
+                                <a href="products?category=<c:out value='图书文具'/>" class="cta-button">浏览图书</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://www.xinhuanet.com/politics/2020-04/21/1125882997_15874276820781n.jpg" alt="图书文具">
@@ -157,7 +157,7 @@
                             <div class="slide-text">
                                 <h1>运动户外</h1>
                                 <p>健康生活，从运动开始</p>
-                                <a href="products?category=运动户外" class="cta-button">运动装备</a>
+                                <a href="products?category=<c:out value='运动户外'/>" class="cta-button">运动装备</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://cdn.shopify.com/s/files/1/0012/8647/1793/files/Ciclista-carretera-montana-a-tamano.jpg?v=1617524062" alt="运动户外">
@@ -169,7 +169,7 @@
                             <div class="slide-text">
                                 <h1>美妆护肤</h1>
                                 <p>美丽从这里开始，呵护你的肌肤</p>
-                                <a href="products?category=美妆护肤" class="cta-button">美妆专区</a>
+                                <a href="products?category=<c:out value='美妆护肤'/>" class="cta-button">美妆专区</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://p2.itc.cn/q_70/images01/20210511/8ed4f7c8490f46b681f13c76ec1648c3.png" alt="美妆护肤">
@@ -181,7 +181,7 @@
                             <div class="slide-text">
                                 <h1>食品饮料</h1>
                                 <p>美味生活，健康饮食</p>
-                                <a href="products?category=食品饮料" class="cta-button">美食专区</a>
+                                <a href="products?category=<c:out value='食品饮料'/>" class="cta-button">美食专区</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://cf.dtcj.com/20364eac-b360-48c7-b90f-3032d3f9ec99.jpg" alt="食品饮料">
@@ -193,7 +193,7 @@
                             <div class="slide-text">
                                 <h1>游戏产品</h1>
                                 <p>娱乐世界，畅玩游戏</p>
-                                <a href="products?category=游戏产品" class="cta-button">游戏专区</a>
+                                <a href="products?category=<c:out value='游戏产品'/>" class="cta-button">游戏专区</a>
                             </div>
                             <div class="slide-image">
                                 <img src="https://www.nxp.com.cn/assets/images/en/blogs/BL-DEVELOPING-ACCESSORIES-1.jpg" alt="游戏产品">

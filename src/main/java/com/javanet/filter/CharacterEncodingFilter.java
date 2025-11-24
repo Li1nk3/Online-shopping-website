@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"*.jsp", "/login", "/register", "/products", "/cart", "/checkout", "/orders", "/product-management", "/order-confirmation", "/profile", "/payment"})
+@WebFilter(urlPatterns = "/*")
 public class CharacterEncodingFilter implements Filter {
     
     @Override
@@ -21,9 +21,10 @@ public class CharacterEncodingFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
-        // 设置请求字符编码
-        httpRequest.setCharacterEncoding("UTF-8");
-        httpResponse.setCharacterEncoding("UTF-8");
+        // 设置请求和响应字符编码
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         
         // 继续处理请求
         chain.doFilter(request, response);

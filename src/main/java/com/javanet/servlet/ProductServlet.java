@@ -47,6 +47,14 @@ public class ProductServlet extends HttpServlet {
             String category = request.getParameter("category");
             String search = request.getParameter("search");
             
+            // 处理URL参数的编码问题
+            if (category != null) {
+                category = new String(category.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            if (search != null) {
+                search = new String(search.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            
             if (productId != null) {
                 // 显示单个商品详情
                 Product product = productDAO.getProductById(Integer.parseInt(productId));

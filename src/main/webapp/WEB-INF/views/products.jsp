@@ -23,9 +23,9 @@
                 </a>
                 <div class="nav-links">
                     <a href="products" class="nav-link">所有商品</a>
-                    <a href="products?category=电子产品" class="nav-link">电子产品</a>
-                    <a href="products?category=家居用品" class="nav-link">家居用品</a>
-                    <a href="products?category=服装鞋帽" class="nav-link">服装鞋帽</a>
+                    <a href="products?category=<c:out value='电子产品'/>" class="nav-link">电子产品</a>
+                    <a href="products?category=<c:out value='家居用品'/>" class="nav-link">家居用品</a>
+                    <a href="products?category=<c:out value='服装鞋帽'/>" class="nav-link">服装鞋帽</a>
                 </div>
             </div>
             <div class="nav-right">
