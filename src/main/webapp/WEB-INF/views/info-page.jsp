@@ -140,7 +140,7 @@
                                     <h4>Java后端开发工程师</h4>
                                     <p><strong>职责：</strong>负责电商平台后端开发，API设计与实现</p>
                                     <p><strong>要求：</strong>3年以上Java开发经验，熟悉Spring框架</p>
-                                    <p><strong>薪资：</strong>15K-25K</p>
+                                    <p><strong>薪资：</strong>2K-3K</p>
                                 </div>
                                 <div class="job-item">
                                     <h4>前端开发工程师</h4>

@@ -9,6 +9,11 @@ import com.javanet.model.OrderItem;
 import com.javanet.model.User;
 import com.javanet.model.Product;
 import com.javanet.util.EmailUtil;
+import com.javanet.util.StripeConfig;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -38,6 +43,8 @@ public class PaymentServlet extends HttpServlet {
         purchaseStatsDAO = new CustomerPurchaseStatsDAO();
         productDAO = new ProductDAO();
         gson = new Gson();
+        // 初始化Stripe API密钥
+        Stripe.apiKey = StripeConfig.getSecretKey();
     }
     
     @Override
@@ -93,6 +100,17 @@ public class PaymentServlet extends HttpServlet {
         String action = request.getParameter("action");
         String orderNumber = request.getParameter("orderNumber");
         
+        // 调试日志
+        // System.out.println("DEBUG: Received action = " + action);
+        // System.out.println("DEBUG: Received orderNumber = " + orderNumber);
+        
+        if (action == null || action.trim().isEmpty()) {
+            result.put("success", false);
+            result.put("message", "操作参数不能为空");
+            out.print(gson.toJson(result));
+            return;
+        }
+        
         if (orderNumber == null || orderNumber.trim().isEmpty()) {
             result.put("success", false);
             result.put("message", "订单号不能为空");
@@ -108,7 +126,17 @@ public class PaymentServlet extends HttpServlet {
             return;
         }
         
-        if ("process".equals(action)) {
+        if ("create-checkout-session".equals(action)) {
+            // 创建Stripe Checkout会话
+            try {
+                String sessionId = createStripeCheckoutSession(order, request);
+                result.put("success", true);
+                result.put("sessionId", sessionId);
+            } catch (StripeException e) {
+                result.put("success", false);
+                result.put("message", "创建支付会话失败: " + e.getMessage());
+            }
+        } else if ("process".equals(action)) {
             // 处理付款
             String paymentMethod = request.getParameter("paymentMethod");
             
@@ -134,12 +162,71 @@ public class PaymentServlet extends HttpServlet {
                 result.put("success", false);
                 result.put("message", "付款处理失败，请重试");
             }
+        } else if ("verify-payment".equals(action)) {
+            // 验证Stripe支付
+            String sessionId = request.getParameter("sessionId");
+            try {
+                Session stripeSession = Session.retrieve(sessionId);
+                if ("paid".equals(stripeSession.getPaymentStatus())) {
+                    boolean updated = orderDAO.updatePaymentStatus(order.getId(), "paid", "stripe");
+                    if (updated) {
+                        updatePurchaseStatsAsync(order);
+                        result.put("success", true);
+                        result.put("message", "付款成功");
+                        result.put("orderNumber", orderNumber);
+                    } else {
+                        result.put("success", false);
+                        result.put("message", "付款状态更新失败");
+                    }
+                } else {
+                    result.put("success", false);
+                    result.put("message", "付款未完成");
+                }
+            } catch (StripeException e) {
+                result.put("success", false);
+                result.put("message", "验证支付失败: " + e.getMessage());
+            }
         } else {
             result.put("success", false);
             result.put("message", "无效的操作");
         }
         
         out.print(gson.toJson(result));
+    }
+    
+    /**
+     * 创建Stripe Checkout会话
+     */
+    private String createStripeCheckoutSession(Order order, HttpServletRequest request) throws StripeException {
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        
+        SessionCreateParams params = SessionCreateParams.builder()
+            .setMode(SessionCreateParams.Mode.PAYMENT)
+            .setSuccessUrl(baseUrl + "/payment-success?orderNumber=" + order.getOrderNumber() + "&session_id={CHECKOUT_SESSION_ID}")
+            .setCancelUrl(baseUrl + "/payment?orderNumber=" + order.getOrderNumber())
+            .addLineItem(
+                SessionCreateParams.LineItem.builder()
+                    .setQuantity(1L)
+                    .setPriceData(
+                        SessionCreateParams.LineItem.PriceData.builder()
+                            .setCurrency("cny")
+                            .setUnitAmount(order.getTotalAmount().multiply(new java.math.BigDecimal(100)).longValue())
+                            .setProductData(
+                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                    .setName("订单 #" + order.getOrderNumber())
+                                    .setDescription("JavaNet在线购物订单")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+            )
+            .putMetadata("order_number", order.getOrderNumber())
+            .putMetadata("user_id", String.valueOf(order.getUserId()))
+            .build();
+        
+        Session stripeSession = Session.create(params);
+        return stripeSession.getId();
     }
     
     /**
