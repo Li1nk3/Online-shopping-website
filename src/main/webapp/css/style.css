@@ -2924,10 +2924,16 @@ button[type="submit"]:not(.btn-ship-order):not(.btn-delete-order):not(.btn-confi
     border-bottom: 1px solid var(--border-color);
 }
 
+.amount-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .amount-label {
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text-grey);
-    margin-bottom: 10px;
     text-transform: uppercase;
     font-weight: 700;
 }
@@ -3101,6 +3107,60 @@ button[type="submit"]:not(.btn-ship-order):not(.btn-delete-order):not(.btn-confi
     box-shadow: none;
 }
 
+/* Stripe 安全支付提示样式 */
+.stripe-security-notice {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 88, 163, 0.05), rgba(0, 123, 255, 0.08));
+    border: 1px solid rgba(0, 88, 163, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.stripe-security-notice:hover {
+    background: linear-gradient(135deg, rgba(0, 88, 163, 0.08), rgba(0, 123, 255, 0.12));
+    border-color: rgba(0, 88, 163, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 88, 163, 0.15);
+}
+
+.stripe-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.stripe-icon {
+    width: 32px;
+    height: 32px;
+    fill: #635bff;
+    stroke: #635bff;
+}
+
+.stripe-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #635bff;
+}
+
+.security-text {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-grey);
+    line-height: 1.4;
+}
+
+.security-text strong {
+    color: var(--text-black);
+    font-size: 16px;
+    display: block;
+    margin-bottom: 2px;
+}
+
 /* 支付页面响应式设计 */
 @media (max-width: 768px) {
     .payment-options-grid {
@@ -3120,12 +3180,42 @@ button[type="submit"]:not(.btn-ship-order):not(.btn-delete-order):not(.btn-confi
         padding: 30px 20px;
     }
     
+    .amount-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .amount-label {
+        font-size: 16px;
+    }
+    
     .amount-value {
         font-size: 36px;
     }
     
     .payment-methods-section {
         padding: 30px 20px;
+    }
+    
+    .stripe-security-notice {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .stripe-logo {
+        justify-content: center;
+    }
+    
+    .security-text {
+        font-size: 13px;
+    }
+    
+    .security-text strong {
+        font-size: 15px;
     }
 }
 
@@ -4182,5 +4272,331 @@ datalist option:last-child {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* 支付成功页面样式 */
+.payment-success-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 60px 40px;
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-success-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--success-green), #28a745, #20c997);
+}
+
+.success-icon-wrapper {
+    margin-bottom: 30px;
+    position: relative;
+    display: inline-block;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    animation: successPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(76, 175, 80, 0.3));
+}
+
+@keyframes successPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.success-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-black);
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, var(--success-green), #28a745);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.success-message {
+    font-size: 18px;
+    color: var(--text-grey);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.order-info-card {
+    background: var(--bg-light);
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.order-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.order-info-card .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-black);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--ikea-blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-info-card .card-title::before {
+    display: none;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e5e5;
+    transition: background 0.2s;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row:hover {
+    background: rgba(0, 88, 163, 0.05);
+    margin: 0 -10px;
+    padding: 12px 10px;
+    border-radius: 4px;
+}
+
+.info-label {
+    font-size: 14px;
+    color: var(--text-grey);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-black);
+}
+
+.info-value.amount {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ikea-blue);
+}
+
+.verification-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.verification-status.success {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(40, 167, 69, 0.1));
+    border-color: var(--success-green);
+}
+
+.verification-status.error {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(200, 35, 51, 0.1));
+    border-color: var(--error-red);
+}
+
+.status-icon {
+    font-size: 20px;
+    animation: statusSpin 2s linear infinite;
+}
+
+@keyframes statusSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.verification-status.success .status-icon,
+.verification-status.error .status-icon {
+    animation: none;
+}
+
+.status-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-grey);
+}
+
+.status-text.status-success {
+    color: var(--success-green);
+    font-weight: 700;
+}
+
+.status-text.status-error {
+    color: var(--error-red);
+    font-weight: 700;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-buttons .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-buttons .btn:hover::before {
+    left: 100%;
+}
+
+.action-buttons .btn-primary {
+    background: linear-gradient(135deg, var(--ikea-blue), #004f93);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 88, 163, 0.3);
+}
+
+.action-buttons .btn-primary:hover {
+    background: linear-gradient(135deg, #004f93, #003d7a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 88, 163, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.action-buttons .btn-primary::after {
+    display: none;
+}
+
+.action-buttons .btn-secondary {
+    background: var(--bg-light);
+    color: var(--text-black);
+    border: 2px solid var(--border-color);
+}
+
+.action-buttons .btn-secondary:hover {
+    background: #e5e5e5;
+    border-color: var(--text-black);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: var(--text-black);
+}
+
+.action-buttons .btn-secondary::after {
+    display: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .payment-success-container {
+        margin: 20px auto;
+        padding: 40px 20px;
+        border-radius: 8px;
+    }
+    
+    .success-title {
+        font-size: 28px;
+    }
+    
+    .success-message {
+        font-size: 16px;
+    }
+    
+    .order-info-card {
+        padding: 20px;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 15px 0;
+    }
+    
+    .info-row:hover {
+        margin: 0;
+        padding: 15px 0;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .action-buttons .btn {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-success-container {
+        margin: 15px;
+        padding: 30px 15px;
+    }
+    
+    .success-title {
+        font-size: 24px;
+    }
+    
+    .success-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .order-info-card {
+        padding: 15px;
+    }
+    
+    .verification-status {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
     }
 }

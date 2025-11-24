@@ -5,9 +5,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>订单付款 - JavaNet 在线商城</title>
+    <title>订单确认 - JavaNet 在线商城</title>
     <link rel="icon" href="${pageContext.request.contextPath}/images/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
     <!-- 现代化导航栏 -->
@@ -70,153 +71,86 @@
     
     <div class="container">
         <div class="breadcrumb">
-            <a href="products">商品列表</a> > <a href="orders">我的订单</a> > <span>订单付款</span>
+            <a href="products">商品列表</a> > <a href="orders">我的订单</a> > <span>订单确认</span>
         </div>
         
         <div class="payment-container">
             <div class="payment-header">
-                <h2>订单付款</h2>
+                <h2>订单确认</h2>
                 <p class="order-info">订单号: <strong>${order.orderNumber}</strong></p>
             </div>
             
             <div class="payment-amount">
-                <div class="amount-label">应付金额</div>
-                <div class="amount-value amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></div>
-            </div>
-            
-            <div class="payment-methods-section">
-                <h3>选择支付方式</h3>
-                <div class="payment-options-grid">
-                    <label class="payment-method-card">
-                        <input type="radio" name="paymentMethod" value="alipay" checked>
-                        <div class="method-content">
-                            <div class="method-icon">
-                                <svg viewBox="0 0 24 24" class="payment-icon-svg">
-                                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-                                    <circle cx="6" cy="16" r="1"/>
-                                    <circle cx="10" cy="16" r="1"/>
-                                    <circle cx="14" cy="16" r="1"/>
-                                    <circle cx="18" cy="16" r="1"/>
-                                </svg>
-                            </div>
-                            <div class="method-name">支付宝</div>
-                            <div class="method-desc">推荐使用</div>
-                        </div>
-                    </label>
-                    
-                    <label class="payment-method-card">
-                        <input type="radio" name="paymentMethod" value="wechat">
-                        <div class="method-content">
-                            <div class="method-icon">
-                                <svg viewBox="0 0 24 24" class="payment-icon-svg">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                </svg>
-                            </div>
-                            <div class="method-name">微信支付</div>
-                            <div class="method-desc">快捷支付</div>
-                        </div>
-                    </label>
-                    
-                    <label class="payment-method-card">
-                        <input type="radio" name="paymentMethod" value="bank">
-                        <div class="method-content">
-                            <div class="method-icon">
-                                <svg viewBox="0 0 24 24" class="payment-icon-svg">
-                                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M5 8h14M5 12h14M5 16h14" stroke="currentColor" stroke-width="2"/>
-                                </svg>
-                            </div>
-                            <div class="method-name">银行卡</div>
-                            <div class="method-desc">支持各大银行</div>
-                        </div>
-                    </label>
+                <div class="amount-row">
+                    <div class="amount-label">应付金额</div>
+                    <div class="amount-value amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></div>
+                </div>
+                
+                <!-- Stripe 安全支付提示 -->
+                <div class="stripe-security-notice">
+                    <div class="stripe-logo">
+                        <svg viewBox="0 0 24 24" class="stripe-icon">
+                            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V8h16v9c0 .55-.45 1-1 1z"/>
+                            <path d="M8 11h8v2H8z"/>
+                        </svg>
+                        <span class="stripe-text">Stripe</span>
+                    </div>
+                    <div class="security-text">
+                        <strong>安全支付</strong><br>
+                        您将通过 Stripe 安全网关进行人民币支付
+                    </div>
                 </div>
             </div>
             
             <div class="payment-actions">
                 <a href="orders" class="btn-back-payment">返回订单列表</a>
-                <button onclick="processPayment()" class="btn-pay-now" id="payButton">
-                    <span class="btn-text">立即支付</span>
+                <button onclick="processStripePayment()" class="btn-pay-now" id="payButton">
+                    <span class="btn-text">前往 Stripe 支付</span>
                     <span class="btn-amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></span>
                 </button>
             </div>
         </div>
     </div>
     
-    <!-- 自定义确认对话框 -->
-    <div id="confirmDialog" class="confirm-dialog-overlay" style="display: none;">
-        <div class="confirm-dialog">
-            <div class="confirm-dialog-header">
-                <h3>确认支付</h3>
-            </div>
-            <div class="confirm-dialog-body">
-                <p>确认支付 <strong class="confirm-amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></strong> 元吗？</p>
-                <p class="confirm-method">支付方式：<span id="selectedPaymentMethod">支付宝</span></p>
-            </div>
-            <div class="confirm-dialog-actions">
-                <button class="btn-confirm-cancel" onclick="closeConfirmDialog()">取消</button>
-                <button class="btn-confirm-ok" onclick="confirmPayment()">确认支付</button>
-            </div>
-        </div>
-    </div>
     
     <script>
-        // 支付处理功能
-        function processPayment() {
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-            const paymentMethodNames = {
-                'alipay': '支付宝',
-                'wechat': '微信支付',
-                'bank': '银行卡'
-            };
-            
-            // 显示选中的支付方式
-            document.getElementById('selectedPaymentMethod').textContent = paymentMethodNames[paymentMethod];
-            
-            // 显示自定义确认对话框
-            document.getElementById('confirmDialog').style.display = 'flex';
-        }
-
-        // 关闭确认对话框
-        function closeConfirmDialog() {
-            document.getElementById('confirmDialog').style.display = 'none';
-        }
-
-        // 确认支付
-        function confirmPayment() {
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        // 初始化Stripe - 使用配置中的发布密钥
+        const stripe = Stripe('<%= com.javanet.util.StripeConfig.getPublishableKey() %>');
+        
+        // 处理Stripe支付
+        function processStripePayment() {
             const payButton = document.getElementById('payButton');
-            
-            closeConfirmDialog();
-            
             payButton.disabled = true;
-            payButton.innerHTML = '<span class="btn-text">处理中...</span>';
+            payButton.innerHTML = '<span class="btn-text">正在跳转到Stripe...</span>';
             
             fetch('payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: 'action=process&orderNumber=${order.orderNumber}&paymentMethod=' + paymentMethod
+                body: 'action=create-checkout-session&orderNumber=${order.orderNumber}'
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showNotification('付款成功！', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'order-detail?orderNumber=' + data.orderNumber;
-                    }, 1500);
+                    // 跳转到Stripe Checkout
+                    return stripe.redirectToCheckout({ sessionId: data.sessionId });
                 } else {
-                    showNotification('付款失败: ' + data.message, 'error');
+                    throw new Error(data.message || '创建支付会话失败');
+                }
+            })
+            .then(result => {
+                if (result.error) {
+                    showNotification(result.error.message, 'error');
                     payButton.disabled = false;
-                    payButton.innerHTML = '<span class="btn-text">立即支付</span><span class="btn-amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></span>';
+                    payButton.innerHTML = '<span class="btn-text">前往 Stripe 支付</span><span class="btn-amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></span>';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('网络错误，请重试', 'error');
+                showNotification('创建支付会话失败: ' + error.message, 'error');
                 payButton.disabled = false;
-                payButton.innerHTML = '<span class="btn-text">立即支付</span><span class="btn-amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></span>';
+                payButton.innerHTML = '<span class="btn-text">前往 Stripe 支付</span><span class="btn-amount"><fmt:formatNumber value="${order.totalAmount}" pattern="#,##0.00"/></span>';
             });
         }
 

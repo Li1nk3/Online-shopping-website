@@ -22,6 +22,11 @@ logs/
 # 忽略数据库连接配置（如果包含敏感信息）
 # src/main/java/com/javanet/util/DatabaseConnection.java
 
+# 忽略环境变量和敏感配置文件
+.env
+*.env
+config.properties
+
 # 忽略备份文件
 *.bak
 *.backup
@@ -39,3 +44,4 @@ TestCustomerStats.class
 cookies.txt
 src/main/java/com/javanet/servlet/TestDatabaseServlet.java
 src/main/webapp/WEB-INF/views/test-customer-management.jsp
+restart-server.sh

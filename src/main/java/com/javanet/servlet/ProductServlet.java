@@ -129,7 +129,7 @@ public class ProductServlet extends HttpServlet {
         // 在新线程中记录浏览日志，避免影响页面响应速度
         new Thread(() -> {
             try {
-                System.out.println("DEBUG: 开始记录浏览日志 - productId=" + productId + ", user=" + (user != null ? user.getId() : "null"));
+                // System.out.println("DEBUG: 开始记录浏览日志 - productId=" + productId + ", user=" + (user != null ? user.getId() : "null"));
                 
                 CustomerBrowseLog log = new CustomerBrowseLog();
                 log.setProductId(productId);
@@ -139,13 +139,13 @@ public class ProductServlet extends HttpServlet {
                 
                 if (user != null) {
                     log.setUserId(user.getId());
-                    System.out.println("DEBUG: 设置用户ID=" + user.getId());
+                    // System.out.println("DEBUG: 设置用户ID=" + user.getId());
                 } else {
-                    System.out.println("DEBUG: 用户未登录，user ID为null");
+                    // System.out.println("DEBUG: 用户未登录，user ID为null");
                 }
                 
                 boolean success = browseLogDAO.addBrowseLog(log);
-                System.out.println("DEBUG: 浏览日志记录结果=" + success);
+                // System.out.println("DEBUG: 浏览日志记录结果=" + success);
                 
             } catch (Exception e) {
                 // 记录日志失败不应该影响主要功能
