@@ -3,6 +3,7 @@ package com.javanet.servlet;
 import com.google.gson.Gson;
 import com.javanet.dao.OrderDAO;
 import com.javanet.dao.ProductDAO;
+import com.javanet.dao.UserDAO;
 import com.javanet.model.Order;
 import com.javanet.model.OrderItem;
 import com.javanet.model.Product;
@@ -91,8 +92,21 @@ public class OrderDetailServlet extends HttpServlet {
                 return;
             }
             
+            // 检查当前用户是否是卖家且订单中包含其商品
+            boolean isSeller = false;
+            if ("seller".equals(user.getRole())) {
+                for (OrderItem item : orderItems) {
+                    Product product = productDAO.getProductById(item.getProductId());
+                    if (product != null && product.getSellerId() == user.getId()) {
+                        isSeller = true;
+                        break;
+                    }
+                }
+            }
+            
             request.setAttribute("order", order);
             request.setAttribute("orderItems", orderItems);
+            request.setAttribute("isSeller", isSeller);
             request.getRequestDispatcher("/WEB-INF/views/order-detail.jsp").forward(request, response);
             
         } catch (NumberFormatException e) {
@@ -183,6 +197,83 @@ public class OrderDetailServlet extends HttpServlet {
                     out.print(gson.toJson(new Response(true, "订单已成功取消")));
                 } else {
                     out.print(gson.toJson(new Response(false, "订单取消失败，可能订单状态不允许取消或订单不存在")));
+                }
+                
+            } catch (NumberFormatException e) {
+                out.print(gson.toJson(new Response(false, "无效的订单ID")));
+            }
+        } else if ("ship".equals(action)) {
+            // 卖家发货
+            String orderIdStr = request.getParameter("orderId");
+            
+            if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
+                out.print(gson.toJson(new Response(false, "订单ID不能为空")));
+                return;
+            }
+            
+            try {
+                int orderId = Integer.parseInt(orderIdStr);
+                Order order = orderDAO.getOrderById(orderId);
+                
+                if (order == null) {
+                    out.print(gson.toJson(new Response(false, "订单不存在")));
+                    return;
+                }
+                
+                // 验证权限：只有卖家和管理员可以发货
+                if (!"seller".equals(user.getRole()) && !"admin".equals(user.getRole())) {
+                    out.print(gson.toJson(new Response(false, "无权操作此订单")));
+                    return;
+                }
+                
+                // 如果是卖家，验证订单中是否包含该卖家的商品
+                if ("seller".equals(user.getRole())) {
+                    List<OrderItem> orderItems = orderDAO.getOrderItems(orderId);
+                    boolean hasSellerProduct = false;
+                    for (OrderItem item : orderItems) {
+                        Product product = productDAO.getProductById(item.getProductId());
+                        if (product != null && product.getSellerId() == user.getId()) {
+                            hasSellerProduct = true;
+                            break;
+                        }
+                    }
+                    if (!hasSellerProduct) {
+                        out.print(gson.toJson(new Response(false, "订单中不包含您的商品")));
+                        return;
+                    }
+                }
+                
+                // 检查订单状态：只有已支付的订单才能发货
+                if (!"paid".equals(order.getPaymentStatus())) {
+                    out.print(gson.toJson(new Response(false, "订单尚未支付，无法发货")));
+                    return;
+                }
+                
+                // 检查订单状态：已发货或已送达的订单不能重复发货
+                if ("shipped".equals(order.getOrderStatus()) || "delivered".equals(order.getOrderStatus())) {
+                    out.print(gson.toJson(new Response(false, "订单已发货，无需重复操作")));
+                    return;
+                }
+                
+                // 更新订单状态为已发货
+                boolean success = orderDAO.updateOrderStatus(orderId, "shipped", order.getPaymentStatus());
+                
+                if (success) {
+                    // 发送发货通知邮件
+                    try {
+                        // 获取买家信息
+                        UserDAO userDAO = new UserDAO();
+                        User buyer = userDAO.getUserById(order.getUserId());
+                        if (buyer != null && buyer.getEmail() != null && !buyer.getEmail().isEmpty()) {
+                            EmailUtil.sendShipmentNotification(buyer.getEmail(), order.getOrderNumber());
+                        }
+                    } catch (Exception e) {
+                        System.err.println("发送发货通知邮件失败: " + e.getMessage());
+                    }
+                    
+                    out.print(gson.toJson(new Response(true, "发货成功")));
+                } else {
+                    out.print(gson.toJson(new Response(false, "发货失败")));
                 }
                 
             } catch (NumberFormatException e) {

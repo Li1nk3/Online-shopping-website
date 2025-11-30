@@ -1,10 +1,14 @@
 package com.javanet.servlet;
 
 import com.javanet.dao.OrderDAO;
+import com.javanet.dao.ProductDAO;
 import com.javanet.dao.UserDAO;
 import com.javanet.model.Order;
+import com.javanet.model.OrderItem;
+import com.javanet.model.Product;
 import com.javanet.model.User;
 import com.javanet.util.EmailUtil;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,11 +23,13 @@ import java.util.List;
 public class OrdersServlet extends HttpServlet {
     private OrderDAO orderDAO;
     private UserDAO userDAO;
+    private ProductDAO productDAO;
     
     @Override
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
         userDAO = new UserDAO();
+        productDAO = new ProductDAO();
     }
     
     @Override
@@ -149,9 +155,8 @@ public class OrdersServlet extends HttpServlet {
                 response.getWriter().write("{\"success\": false, \"message\": \"无效的订单ID\"}");
             }
         } else if ("ship".equals(action)) {
-            // 管理员发货
+            // 卖家或管理员发货
             String orderIdStr = request.getParameter("orderId");
-            String trackingNumber = request.getParameter("trackingNumber");
             
             if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -162,6 +167,49 @@ public class OrdersServlet extends HttpServlet {
             try {
                 int orderId = Integer.parseInt(orderIdStr);
                 Order order = orderDAO.getOrderById(orderId);
+                
+                if (order == null) {
+                    response.getWriter().write("{\"success\": false, \"message\": \"订单不存在\"}");
+                    return;
+                }
+                
+                // 验证权限：只有卖家和管理员可以发货
+                if (!"seller".equals(user.getRole()) && !"admin".equals(user.getRole())) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write("{\"success\": false, \"message\": \"无权操作此订单\"}");
+                    return;
+                }
+                
+                // 如果是卖家，验证订单中是否包含该卖家的商品
+                if ("seller".equals(user.getRole())) {
+                    List<OrderItem> orderItems = orderDAO.getOrderItems(orderId);
+                    boolean hasSellerProduct = false;
+                    for (OrderItem item : orderItems) {
+                        Product product = productDAO.getProductById(item.getProductId());
+                        if (product != null && product.getSellerId() == user.getId()) {
+                            hasSellerProduct = true;
+                            break;
+                        }
+                    }
+                    if (!hasSellerProduct) {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.getWriter().write("{\"success\": false, \"message\": \"订单中不包含您的商品\"}");
+                        return;
+                    }
+                }
+                
+                // 检查订单状态：只有已支付的订单才能发货
+                if (!"paid".equals(order.getPaymentStatus())) {
+                    response.getWriter().write("{\"success\": false, \"message\": \"订单尚未支付，无法发货\"}");
+                    return;
+                }
+                
+                // 检查订单状态：已发货或已送达的订单不能重复发货
+                if ("shipped".equals(order.getOrderStatus()) || "delivered".equals(order.getOrderStatus())) {
+                    response.getWriter().write("{\"success\": false, \"message\": \"订单已发货，无需重复操作\"}");
+                    return;
+                }
+                
                 boolean success = orderDAO.updateOrderStatus(orderId, "shipped", "paid");
                 
                 response.setContentType("application/json");

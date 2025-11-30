@@ -177,14 +177,23 @@
             <!-- 操作按钮 -->
             <div class="order-actions-detail">
                 <a href="orders" class="btn-back-order btn-primary">返回订单列表</a>
-                <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'pending' && sessionScope.user.id == order.userId}">
-                    <button class="btn-cancel-order" onclick="cancelOrder('${order.id}')">取消订单</button>
+                
+                <!-- 买家操作按钮 -->
+                <c:if test="${sessionScope.user.id == order.userId}">
+                    <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'pending'}">
+                        <button class="btn-cancel-order" onclick="cancelOrder('${order.id}')">取消订单</button>
+                    </c:if>
+                    <c:if test="${order.paymentStatus == 'pending' && order.orderStatus != 'cancelled'}">
+                        <a href="payment?orderNumber=${order.orderNumber}" class="btn-pay-now">立即付款</a>
+                    </c:if>
+                    <c:if test="${order.orderStatus == 'shipped'}">
+                        <button class="btn-confirm-delivery" onclick="confirmReceipt('${order.id}')">确认收货</button>
+                    </c:if>
                 </c:if>
-                <c:if test="${order.paymentStatus == 'pending' && order.orderStatus != 'cancelled' && sessionScope.user.id == order.userId}">
-                    <a href="payment?orderNumber=${order.orderNumber}" class="btn-pay-now">立即付款</a>
-                </c:if>
-                <c:if test="${order.orderStatus == 'shipped' && sessionScope.user.id == order.userId}">
-                    <button class="btn-confirm-delivery" onclick="confirmReceipt('${order.id}')">确认收货</button>
+                
+                <!-- 卖家操作按钮 -->
+                <c:if test="${isSeller && order.paymentStatus == 'paid' && order.orderStatus != 'shipped' && order.orderStatus != 'delivered' && order.orderStatus != 'cancelled'}">
+                    <button class="btn-ship-order" onclick="shipOrder('${order.id}')">发货</button>
                 </c:if>
             </div>
         </div>
@@ -288,6 +297,38 @@
                 
                 xhr.send('action=confirmDelivery&orderId=' + encodeURIComponent(orderId));
             }, { type: 'success', title: '确认收货' });
+        }
+
+        // 卖家发货功能
+        function shipOrder(orderId) {
+            showConfirm('确定要发货吗？发货后买家将收到通知。', function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'order-detail', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (xhr.status === 200 && response.success) {
+                                showAlert('发货成功！买家已收到通知', 'success').then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                showAlert('发货失败: ' + (response.message || '未知错误'), 'error');
+                            }
+                        } catch (e) {
+                            showAlert('发货失败: 服务器响应格式错误', 'error');
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    showAlert('发货失败: 网络错误', 'error');
+                };
+                
+                xhr.send('action=ship&orderId=' + encodeURIComponent(orderId));
+            }, { type: 'warning', title: '确认发货' });
         }
     </script>
 </body>

@@ -214,8 +214,9 @@
                                 
                                 <div class="order-actions">
                                     <a href="order-detail?id=${order.id}" class="btn-view-detail">查看完整详情</a>
+                                    
+                                    <!-- 买家操作按钮 -->
                                     <c:if test="${sessionScope.user.id == order.userId}">
-                                        <!-- 订单所有者的操作按钮 -->
                                         <c:if test="${order.paymentStatus == 'pending' && order.orderStatus != 'cancelled'}">
                                             <a href="payment?orderNumber=${order.orderNumber}" class="btn-pay-now">立即付款</a>
                                         </c:if>
@@ -226,8 +227,14 @@
                                             <button class="btn-confirm-delivery" onclick="confirmDelivery('${order.id}')">确认收货</button>
                                         </c:if>
                                     </c:if>
+                                    
+                                    <!-- 卖家操作按钮 -->
+                                    <c:if test="${userRole == 'seller' && order.paymentStatus == 'paid' && order.orderStatus != 'shipped' && order.orderStatus != 'delivered' && order.orderStatus != 'cancelled'}">
+                                        <button class="btn-ship-order" onclick="shipOrder('${order.id}')">发货</button>
+                                    </c:if>
+                                    
+                                    <!-- 管理员操作按钮 -->
                                     <c:if test="${userRole == 'admin'}">
-                                        <!-- 管理员的操作按钮 -->
                                         <c:if test="${order.orderStatus == 'pending' && order.paymentStatus == 'paid'}">
                                             <button class="btn-confirm-order" onclick="confirmOrder('${order.id}')">
                                                 确认订单

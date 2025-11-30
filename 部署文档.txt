@@ -1,0 +1,129 @@
+JavaNet 在线购物网站 - 应用部署文档
+
+一、部署详细过程
+
+1. 环境准备
+   操作系统：Linux 5.4
+   Java版本：JDK 8
+   数据库：MySQL 8.0
+   构建工具：Maven 3.6+
+   工作目录：/root/javanet
+
+2. 数据库初始化
+   (1) 登录MySQL数据库
+       mysql -u root -p
+   
+   (2) 执行数据库初始化脚本
+       source /root/javanet/database/init.sql
+   
+   (3) 验证数据库创建成功
+       USE javanet_shop;
+       SHOW TABLES;
+
+3. 配置数据库连接
+   编辑文件：src/main/java/com/javanet/util/DatabaseConnection.java
+   
+   修改以下配置：
+   private static final String URL = "jdbc:mysql://localhost:3306/javanet_shop?useSSL=false&serverTimezone=UTC&characterEncoding=utf8";
+   private static final String USERNAME = "root";
+   private static final String PASSWORD = "your_password";
+
+4. 配置应用端口
+   编辑文件：pom.xml
+   
+   在tomcat7-maven-plugin配置中设置端口：
+   <configuration>
+       <port>1337</port>
+       <path>/</path>
+   </configuration>
+
+5. 编译项目
+   进入项目目录：
+   cd /root/javanet
+   
+   清理并编译：
+   mvn clean compile
+
+6. 启动应用
+   使用Maven Tomcat插件启动：
+   sudo mvn tomcat7:run
+   
+   应用启动后监听端口：1337
+
+7. 配置防火墙
+   开放1337端口：
+   sudo ufw allow 1337/tcp
+   sudo ufw status
+
+8. 配置云服务器安全组
+   在云服务器控制台添加安全组规则：
+   - 端口范围：1337/1337
+   - 授权对象：0.0.0.0/0
+   - 协议类型：TCP
+
+9. 验证部署
+   本地测试：
+   curl http://localhost:1337
+   
+   公网测试：
+   curl http://your_server_ip:1337
+
+
+二、部署地址
+
+公网访问地址（请替换为实际服务器IP）：
+- 应用首页：http://your_server_ip:1337/home
+- 登录页面：http://your_server_ip:1337/login
+- 商品列表：http://your_server_ip:1337/products
+- 购物车：http://your_server_ip:1337/cart
+- 订单管理：http://your_server_ip:1337/orders
+
+本地测试地址：
+- 应用首页：http://localhost:8080/javanet-shop/home
+- 登录页面：http://localhost:8080/javanet-shop/login
+
+
+三、测试账号和口令
+
+1. 管理员账号
+   用户名：admin
+   密码：admin123
+   权限：系统管理员，可查看所有订单、管理所有商品、删除订单
+
+2. 卖家账号
+   卖家1：
+   用户名：seller1
+   密码：seller123
+   权限：管理自己的商品、查看相关订单、订单发货
+   
+   卖家2：
+   用户名：seller2
+   密码：seller123
+   权限：管理自己的商品、查看相关订单、订单发货
+
+3. 买家账号
+   测试买家（推荐）：
+   用户名：test
+   密码：test123
+   权限：浏览购买商品、管理购物车、下单支付、查看订单
+   
+   买家1：
+   用户名：buyer1
+   密码：buyer123
+   权限：浏览购买商品、管理购物车、下单支付、查看订单
+   
+   买家2：
+   用户名：buyer2
+   密码：buyer123
+   权限：浏览购买商品、管理购物车、下单支付、查看订单
+
+
+四、注意事项
+
+1. 确保MySQL服务正常运行
+2. 确保1337端口未被占用
+3. 公网访问需要配置云服务器安全组规则
+4. 数据库字符集使用utf8mb4，避免中文乱码
+5. 首次启动可能需要下载Maven依赖，请耐心等待
+6. 如需停止应用，按Ctrl+C终止进程
+7. 生产环境建议使用systemd管理服务进程

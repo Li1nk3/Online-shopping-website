@@ -349,11 +349,12 @@
         // 更新图片预览
         function updateImagePreview(input) {
             const url = input.value;
-            const previewDiv = input.parentElement.querySelector('.image-preview-small');
+            const imageGroup = input.closest('.image-input-group');
+            const previewDiv = imageGroup.querySelector('.image-preview-small');
             
-            if (url) {
+            if (url && previewDiv) {
                 previewDiv.innerHTML = '<img src="' + url + '" alt="预览" class="preview-img-small">';
-            } else {
+            } else if (previewDiv) {
                 previewDiv.innerHTML = '';
             }
         }
