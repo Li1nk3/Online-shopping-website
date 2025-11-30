@@ -2,8 +2,10 @@ package com.javanet.servlet;
 
 import com.google.gson.Gson;
 import com.javanet.dao.OrderDAO;
+import com.javanet.dao.ProductDAO;
 import com.javanet.model.Order;
 import com.javanet.model.OrderItem;
+import com.javanet.model.Product;
 import com.javanet.model.User;
 import com.javanet.util.EmailUtil;
 import javax.servlet.ServletException;
@@ -19,11 +21,13 @@ import java.util.List;
 @WebServlet("/order-detail")
 public class OrderDetailServlet extends HttpServlet {
     private OrderDAO orderDAO;
+    private ProductDAO productDAO;
     private Gson gson;
     
     @Override
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
+        productDAO = new ProductDAO();
         gson = new Gson();
     }
     
@@ -59,14 +63,33 @@ public class OrderDetailServlet extends HttpServlet {
                 return;
             }
             
-            // 验证订单是否属于当前用户，或者用户是管理员
-            if (order.getUserId() != user.getId() && !"admin".equals(user.getRole())) {
+            // 获取订单商品项
+            List<OrderItem> orderItems = orderDAO.getOrderItems(order.getId());
+            
+            // 验证权限：订单所有者、管理员或卖家（订单中包含该卖家的商品）
+            boolean hasPermission = false;
+            
+            if (order.getUserId() == user.getId()) {
+                // 订单所有者
+                hasPermission = true;
+            } else if ("admin".equals(user.getRole())) {
+                // 管理员
+                hasPermission = true;
+            } else if ("seller".equals(user.getRole())) {
+                // 卖家：检查订单中是否包含该卖家的商品
+                for (OrderItem item : orderItems) {
+                    Product product = productDAO.getProductById(item.getProductId());
+                    if (product != null && product.getSellerId() == user.getId()) {
+                        hasPermission = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!hasPermission) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "无权访问此订单");
                 return;
             }
-            
-            // 获取订单商品项
-            List<OrderItem> orderItems = orderDAO.getOrderItems(order.getId());
             
             request.setAttribute("order", order);
             request.setAttribute("orderItems", orderItems);
@@ -110,8 +133,14 @@ public class OrderDetailServlet extends HttpServlet {
                 int orderId = Integer.parseInt(orderIdStr);
                 Order order = orderDAO.getOrderById(orderId);
                 
-                if (order == null || (order.getUserId() != user.getId() && !"admin".equals(user.getRole()))) {
-                    out.print(gson.toJson(new Response(false, "订单不存在或无权操作")));
+                if (order == null) {
+                    out.print(gson.toJson(new Response(false, "订单不存在")));
+                    return;
+                }
+                
+                // 验证权限：只有订单所有者和管理员可以确认收货
+                if (order.getUserId() != user.getId() && !"admin".equals(user.getRole())) {
+                    out.print(gson.toJson(new Response(false, "无权操作此订单")));
                     return;
                 }
                 

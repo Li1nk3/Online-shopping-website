@@ -4196,7 +4196,7 @@ datalist option:last-child {
 }
 
 .btn-remove-image::before {
-    content: '🗑️';
+    content: '';
     font-size: 12px;
 }
 

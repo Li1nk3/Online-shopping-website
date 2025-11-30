@@ -24,7 +24,6 @@ logs/
 
 # 忽略环境变量和敏感配置文件
 .env
-.env.example
 *.env
 config.properties
 

@@ -148,6 +148,9 @@ public class PaymentServlet extends HttpServlet {
                 boolean updated = orderDAO.updatePaymentStatus(order.getId(), "paid", paymentMethod);
                 
                 if (updated) {
+                    // 扣减商品库存
+                    deductProductStock(order.getId());
+                    
                     // 付款成功后更新客户购买统计
                     updatePurchaseStatsAsync(order);
                     
@@ -170,6 +173,9 @@ public class PaymentServlet extends HttpServlet {
                 if ("paid".equals(stripeSession.getPaymentStatus())) {
                     boolean updated = orderDAO.updatePaymentStatus(order.getId(), "paid", "stripe");
                     if (updated) {
+                        // 扣减商品库存
+                        deductProductStock(order.getId());
+                        
                         updatePurchaseStatsAsync(order);
                         result.put("success", true);
                         result.put("message", "付款成功");
@@ -279,5 +285,42 @@ public class PaymentServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }).start();
+    }
+    
+    /**
+     * 扣减商品库存
+     * @param orderId 订单ID
+     */
+    private void deductProductStock(int orderId) {
+        try {
+            // 获取订单的所有商品项
+            List<OrderItem> orderItems = orderDAO.getOrderItems(orderId);
+            
+            for (OrderItem item : orderItems) {
+                Product product = productDAO.getProductById(item.getProductId());
+                if (product != null) {
+                    // 计算新库存
+                    int newStock = product.getStock() - item.getQuantity();
+                    if (newStock < 0) {
+                        newStock = 0; // 防止库存为负数
+                    }
+                    
+                    // 更新库存
+                    boolean updated = productDAO.updateStock(item.getProductId(), newStock);
+                    if (updated) {
+                        System.out.println("库存扣减成功: 商品ID=" + item.getProductId() +
+                                         ", 原库存=" + product.getStock() +
+                                         ", 购买数量=" + item.getQuantity() +
+                                         ", 新库存=" + newStock);
+                    } else {
+                        System.err.println("库存扣减失败: 商品ID=" + item.getProductId());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // 库存扣减失败不应该影响支付流程
+            System.err.println("扣减库存时发生错误: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

@@ -136,11 +136,8 @@
     <script>
         function confirmDelete(productId, productName) {
             showConfirm('确定要删除商品 "' + productName + '" 吗？此操作不可恢复。', function() {
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = 'product-management?action=delete&id=' + productId;
-                document.body.appendChild(form);
-                form.submit();
+                // 使用 GET 请求删除商品
+                window.location.href = 'product-management?action=delete&id=' + productId;
             }, { type: 'danger', title: '删除商品' });
         }
 

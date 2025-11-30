@@ -134,6 +134,22 @@ public class ProductServlet extends HttpServlet {
      * 异步记录浏览日志
      */
     private void recordBrowseLogAsync(HttpServletRequest request, int productId, User user) {
+        // 在主线程中提取需要的信息，避免在异步线程中访问request对象
+        final String sessionId;
+        final String ipAddress;
+        final String userAgent;
+        
+        try {
+            HttpSession session = request.getSession(false);
+            sessionId = (session != null) ? session.getId() : "unknown";
+            ipAddress = getClientIpAddress(request);
+            userAgent = request.getHeader("User-Agent");
+        } catch (Exception e) {
+            // 如果获取信息失败，直接返回，不记录日志
+            System.err.println("获取请求信息失败: " + e.getMessage());
+            return;
+        }
+        
         // 在新线程中记录浏览日志，避免影响页面响应速度
         new Thread(() -> {
             try {
@@ -141,9 +157,9 @@ public class ProductServlet extends HttpServlet {
                 
                 CustomerBrowseLog log = new CustomerBrowseLog();
                 log.setProductId(productId);
-                log.setSessionId(request.getSession().getId());
-                log.setIpAddress(getClientIpAddress(request));
-                log.setUserAgent(request.getHeader("User-Agent"));
+                log.setSessionId(sessionId);
+                log.setIpAddress(ipAddress);
+                log.setUserAgent(userAgent);
                 
                 if (user != null) {
                     log.setUserId(user.getId());

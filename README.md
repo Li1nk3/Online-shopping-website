@@ -141,11 +141,6 @@ cp .env.example .env
 nano .env
 ```
 
-**注意：**
-- `.env` 文件已添加到 `.gitignore`，不会被提交到版本控制
-- 请从 [Stripe Dashboard](https://dashboard.stripe.com/apikeys) 获取您的API密钥
-- 生产环境请使用生产密钥，开发环境使用测试密钥
-
 ### 4. 修改数据库连接
 编辑 `src/main/java/com/javanet/util/DatabaseConnection.java`，修改数据库连接参数：
 ```java

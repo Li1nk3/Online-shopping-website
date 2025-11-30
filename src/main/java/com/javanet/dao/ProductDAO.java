@@ -213,14 +213,80 @@ public class ProductDAO {
     }
     
     public boolean deleteProduct(int productId) {
-        String sql = "DELETE FROM products WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, productId);
-            return stmt.executeUpdate() > 0;
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false); // 开始事务
+            
+            // 首先检查商品是否在订单中
+            String checkOrdersSql = "SELECT COUNT(*) FROM order_items WHERE product_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(checkOrdersSql)) {
+                stmt.setInt(1, productId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    // 商品已在订单中，不能删除
+                    System.err.println("无法删除商品ID=" + productId + "：该商品已在订单中，不能删除以保留订单历史");
+                    return false;
+                }
+            }
+            
+            // 1. 删除商品图片
+            String deleteImagesSql = "DELETE FROM product_images WHERE product_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteImagesSql)) {
+                stmt.setInt(1, productId);
+                stmt.executeUpdate();
+            }
+            
+            // 2. 删除商品评论
+            String deleteReviewsSql = "DELETE FROM product_reviews WHERE product_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteReviewsSql)) {
+                stmt.setInt(1, productId);
+                stmt.executeUpdate();
+            }
+            
+            // 3. 删除浏览记录
+            String deleteBrowseLogsSql = "DELETE FROM customer_browse_logs WHERE product_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteBrowseLogsSql)) {
+                stmt.setInt(1, productId);
+                stmt.executeUpdate();
+            }
+            
+            // 4. 删除购物车中的该商品
+            String deleteCartSql = "DELETE FROM cart WHERE product_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteCartSql)) {
+                stmt.setInt(1, productId);
+                stmt.executeUpdate();
+            }
+            
+            // 5. 最后删除商品本身
+            String deleteProductSql = "DELETE FROM products WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(deleteProductSql)) {
+                stmt.setInt(1, productId);
+                int result = stmt.executeUpdate();
+                
+                conn.commit(); // 提交事务
+                return result > 0;
+            }
+            
         } catch (SQLException e) {
             e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback(); // 回滚事务
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
             return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // 恢复自动提交
+                    conn.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
         }
     }
 }

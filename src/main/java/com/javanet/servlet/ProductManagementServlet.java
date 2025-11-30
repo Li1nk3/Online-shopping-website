@@ -53,18 +53,26 @@ public class ProductManagementServlet extends HttpServlet {
                 }
                 int productId = Integer.parseInt(idParam);
                 Product product = productDAO.getProductById(productId);
-                if (product != null) {
-                    // 加载商品图片
-                    List<ProductImage> images = productImageDAO.getImagesByProductId(productId);
-                    product.setImages(images);
-                    request.setAttribute("product", product);
-                    // 获取所有分类
-                    List<String> categories = productDAO.getAllCategories();
-                    request.setAttribute("categories", categories);
-                    request.getRequestDispatcher("/WEB-INF/views/product-form.jsp").forward(request, response);
-                } else {
+                
+                if (product == null) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "商品不存在");
+                    return;
                 }
+                
+                // 验证商品所有权：非管理员只能编辑自己的商品
+                if (!"admin".equals(user.getRole()) && product.getSellerId() != user.getId()) {
+                    response.sendRedirect("product-management?error=" + java.net.URLEncoder.encode("您没有权限编辑此商品", "UTF-8"));
+                    return;
+                }
+                
+                // 加载商品图片
+                List<ProductImage> images = productImageDAO.getImagesByProductId(productId);
+                product.setImages(images);
+                request.setAttribute("product", product);
+                // 获取所有分类
+                List<String> categories = productDAO.getAllCategories();
+                request.setAttribute("categories", categories);
+                request.getRequestDispatcher("/WEB-INF/views/product-form.jsp").forward(request, response);
             } else if ("delete".equals(action)) {
                 // 删除商品
                 String idParam = request.getParameter("id");
@@ -78,15 +86,15 @@ public class ProductManagementServlet extends HttpServlet {
                 Product product = productDAO.getProductById(productId);
                 if (product != null && !"admin".equals(user.getRole()) &&
                     product.getSellerId() != user.getId()) {
-                    response.sendRedirect("product-management?error=您没有权限删除此商品");
+                    response.sendRedirect("product-management?error=" + java.net.URLEncoder.encode("您没有权限删除此商品", "UTF-8"));
                     return;
                 }
                 
                 boolean success = productDAO.deleteProduct(productId);
                 if (success) {
-                    response.sendRedirect("product-management?message=删除成功");
+                    response.sendRedirect("product-management?message=" + java.net.URLEncoder.encode("删除成功", "UTF-8"));
                 } else {
-                    response.sendRedirect("product-management?error=删除失败");
+                    response.sendRedirect("product-management?error=" + java.net.URLEncoder.encode("删除失败：该商品已在订单中，不能删除以保留订单历史", "UTF-8"));
                 }
             } else if ("add".equals(action)) {
                 // 添加新商品表单
@@ -115,6 +123,8 @@ public class ProductManagementServlet extends HttpServlet {
                     request.setAttribute("message", message);
                 }
                 if (error != null) {
+                    // 手动解码URL参数
+                    error = new String(error.getBytes("ISO-8859-1"), "UTF-8");
                     request.setAttribute("error", error);
                 }
                 
@@ -266,7 +276,6 @@ public class ProductManagementServlet extends HttpServlet {
             product.setPrice(price);
             product.setStock(stock);
             product.setCategory(category.trim());
-            product.setSellerId(user.getId());
             // 设置主图URL用于向后兼容
             product.setImageUrl(validImageUrls.get(primaryImageIndex));
             
@@ -292,6 +301,13 @@ public class ProductManagementServlet extends HttpServlet {
                     return;
                 }
                 
+                // 保留原来的seller_id，不改变商品所有者
+                if (existingProduct != null) {
+                    product.setSellerId(existingProduct.getSellerId());
+                } else {
+                    product.setSellerId(user.getId());
+                }
+                
                 success = productDAO.updateProduct(product);
                 
                 if (success) {
@@ -310,7 +326,8 @@ public class ProductManagementServlet extends HttpServlet {
                 }
                 successMessage = "商品更新成功";
             } else {
-                // 添加新商品
+                // 添加新商品 - 新商品的seller_id设置为当前用户
+                product.setSellerId(user.getId());
                 success = productDAO.addProduct(product);
                 
                 if (success) {
