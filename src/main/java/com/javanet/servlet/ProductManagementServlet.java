@@ -110,6 +110,8 @@ public class ProductManagementServlet extends HttpServlet {
                 String message = request.getParameter("message");
                 String error = request.getParameter("error");
                 if (message != null) {
+                    // 手动解码URL参数
+                    message = new String(message.getBytes("ISO-8859-1"), "UTF-8");
                     request.setAttribute("message", message);
                 }
                 if (error != null) {
