@@ -80,17 +80,18 @@ CREATE TABLE product_images (
 );
 
 -- 创建客户浏览日志表（简化版本）
+-- user_id 允许 NULL，支持未登录用户浏览
 CREATE TABLE customer_browse_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+    user_id INT NULL,
     product_id INT,
     session_id VARCHAR(100),
     ip_address VARCHAR(45),
     user_agent TEXT,
     duration_seconds INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     INDEX idx_user_created (user_id, created_at),
     INDEX idx_product_created (product_id, created_at),
     INDEX idx_duration (duration_seconds)
