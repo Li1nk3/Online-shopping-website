@@ -44,4 +44,6 @@ TestCustomerStats.class
 cookies.txt
 src/main/java/com/javanet/servlet/TestDatabaseServlet.java
 src/main/webapp/WEB-INF/views/test-customer-management.jsp
-restart-server.sh
+javanet-migration/
+stop-server.sh
+server.pid
